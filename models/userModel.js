@@ -1,13 +1,23 @@
 const mongoose = require('mongoose')
+const validator = require('validator')  
 
-const userSchema = new moongose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please tell us your name!']
+        required: [true, 'Please tell us your name!'],
+        validate: {
+            validator:
+                function(name){
+                    return name.split(/\W+/).length >= 2
+                },
+                message: 'You must provide first and last name!'
+        }
     },
     email: {
         type: String,
-        required: [true, 'Please enter a valid email.']
+        required: [true, 'Please enter a valid email.'],
+        vaidate: [validator.isEmail, 'Please enter a valid email.'],
+        unique: true
     },
     password: {
         type: String,
@@ -15,9 +25,15 @@ const userSchema = new moongose.Schema({
         minLeng: 8,
         select: false
     },
+    // passwordConfirm: {
+
+    // },
     date: {
         type: Date,
         default: Date.now()
+    },
+    avatar: {
+        type: String
     }
 })
 

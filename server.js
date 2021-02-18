@@ -11,7 +11,7 @@ const app = express()
 connectDB()
 
 //Reading data from the body into req.body
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '10kb' }))
 
 app.get('/', (req, res) => res.send('Hello from the server!'))
 
@@ -21,7 +21,7 @@ app.use('/api/profiles', profileRoutes)
 app.use('/api/books', bookRoutes)
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
