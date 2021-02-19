@@ -1,7 +1,8 @@
-import {React, useState, useEffect} from 'react'
+import {React, useState} from 'react'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
+import axios from 'axios'
+
 
 function Register() {
     const [formData, setFormData] = useState({
@@ -13,14 +14,25 @@ function Register() {
 
     const {name, email, password, passwordConfirm} = formData
 
-    const onChange = (e) => setFormData({...formData, [e.target.name]: e.target.value})
+    const onChange = (e) => setFormData({...formData, [e.target.id]: e.target.value})
 
-    const onSubmit = e => {
+    const onSubmit = async e => {
         e.preventDefault()
-        if(password !== passwordConfirm){
-            console.log('Passwords do not match!');
-        } else {
-            console.log(formData);
+        const newUser = {
+            name,
+            email,
+            password
+        }
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            // const body = JSON.stringify(newUser)
+            await axios.post('api/users', newUser, config)
+        } catch (error) {
+            console.log(error.response.data);
         }
     }
 
@@ -29,31 +41,31 @@ function Register() {
             <h1>Sign Up</h1>
             <Form onSubmit={e => onSubmit(e)}>
 
-              <Form.Group controlId="name" value={name} onChange={e => onChange(e)}>
+              <Form.Group>
                 <Form.Label>Full Name</Form.Label>
-                <Form.Control type="text" placeholder="First Last" />
+                <Form.Control type="text" placeholder="First Last" id="name" value={name} onChange={e => onChange(e)}/>
               </Form.Group>
 
-              <Form.Group controlId="email"  value={email} onChange={e => onChange(e)}>
+              <Form.Group>
                 <Form.Label>Email Adress</Form.Label>
-                <Form.Control type="email" placeholder="test@provider.com"/>
+                <Form.Control type="email" placeholder="test@provider.com" id="email" value={email} onChange={e => onChange(e)}/>
                 <Form.Text className="text-muted">
                   We'll never share your email with anyone else.
                 </Form.Text>
               </Form.Group>
 
-              <Form.Group controlId="password" value={password} onChange={e => onChange(e)}>
+              <Form.Group>
                 <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password"/>
+                <Form.Control type="password" placeholder="Password" id="password" value={password} onChange={e => onChange(e)}/>
               </Form.Group>
 
 
-              <Form.Group controlId="passwordConfirm" value={passwordConfirm} onChange={e => onChange(e)}>
+              <Form.Group>
                 <Form.Label>Confirm Your Password</Form.Label>
-                <Form.Control type="password" placeholder="Retype Password"/>
+                <Form.Control type="password" placeholder="Retype Password" id="passwordConfirm" value={passwordConfirm} onChange={e => onChange(e)}/>
               </Form.Group>
 
-              <Button variant="outline-success" type="submit">
+              <Button variant="outline-info" type="submit">
                 Submit
               </Button>
 
