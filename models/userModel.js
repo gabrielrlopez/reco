@@ -1,17 +1,15 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
         type: String,
         required: [true, 'Please tell us your name!'],
-        validate: {
-            validator:
-                function(name){
-                    return name.split(/\W+/).length >= 2
-                },
-                message: 'You must provide a first and last name!'
-        }
+    },
+    lastName: {
+        type: String,
+        required: [true, 'Please tell us your name!'],
     },
     email: {
         type: String,
@@ -24,6 +22,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please come up with a password that contains a minimum of 8 characters.'],
         minlength: 8,
+        select: false
     },
     passwordConfirm: {
         type: String,
@@ -45,6 +44,26 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String
     }
+})
+
+//Capitalize users first/last name
+userSchema.pre('save', function(next){
+    this.firstName = this.firstName.toUpperCase()
+    this.lastName= this.lastName.toUpperCase()
+    next()
+})
+
+//Comparing hashed password with user input
+userSchema.methods.correctPassword = async function(formInput, userPasssword){
+    return await bcrypt.compare(formInput, userPasssword)
+}
+
+//Hash users passwords when modified and when creating new account
+userSchema.pre('save', async function(next){
+    if(!this.isModified('password')) return next()
+    this.password = await bcrypt.hash(this.password, 12)
+    this.passwordConfirm = undefined
+    next()
 })
 
 const User = mongoose.model('User', userSchema)

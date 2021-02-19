@@ -15,6 +15,7 @@ function Login() {
     const onChange = (e) => setFormData({...formData, [e.target.id]: e.target.value})
 
     const onSubmit = async (e) => {
+        e.preventDefault()
         const formInputs = {
             email,
             password
@@ -25,7 +26,7 @@ function Login() {
                     'Content-Type': 'application/json'
                 }
             }
-            await axios.post('/api/login', formInputs, config)
+            await axios.post('/api/users/login', formInputs, config)
         } catch (error) {
             console.log(error.response.data);
         }

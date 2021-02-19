@@ -6,22 +6,25 @@ import axios from 'axios'
 
 function Register() {
     const [formData, setFormData] = useState({
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         passwordConfirm: ''
     })
 
-    const {name, email, password, passwordConfirm} = formData
+    const {firstName, lastName, email, password, passwordConfirm} = formData
 
     const onChange = (e) => setFormData({...formData, [e.target.id]: e.target.value})
 
     const onSubmit = async e => {
         e.preventDefault()
         const newUser = {
-            name,
+            firstName,
+            lastName,
             email,
-            password
+            password,
+            passwordConfirm
         }
         try {
             const config = {
@@ -30,7 +33,14 @@ function Register() {
                 }
             }
             // const body = JSON.stringify(newUser)
-            await axios.post('api/users', newUser, config)
+            await axios.post('api/users/signup', newUser, config)
+            setFormData({
+              firstName: '',
+              lastName: '',
+              email: '',
+              password: '',
+              passwordConfirm: ''
+            })
         } catch (error) {
             console.log(error.response.data);
         }
@@ -42,8 +52,13 @@ function Register() {
             <Form onSubmit={e => onSubmit(e)}>
 
               <Form.Group>
-                <Form.Label>Full Name</Form.Label>
-                <Form.Control type="text" placeholder="First Last" id="name" value={name} onChange={e => onChange(e)}/>
+                <Form.Label>First Name</Form.Label>
+                <Form.Control type="text" placeholder="First" id="firstName" value={firstName} onChange={e => onChange(e)}/>
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control type="text" placeholder="Last" id="lastName" value={lastName} onChange={e => onChange(e)}/>
               </Form.Group>
 
               <Form.Group>

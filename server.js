@@ -1,4 +1,4 @@
-//Global uncaugh exceptions (async handlers)
+//Global uncaught exceptions (async handlers)
 process.on('uncaughtException', err => {
     console.log('UNHANDLED EXCEPTION! Shutting down...')
     console.log(err.name, err.message)
