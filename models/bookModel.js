@@ -9,9 +9,6 @@ const bookSchema = new mongoose.Schema ({
         type: String,
         required: [true, "We can't seem to save the author from Google right now. Please try again."]
     },
-    googleLink: {
-        type: String,
-    },
     publisher: String,
     publishedDate: {
         type: String
