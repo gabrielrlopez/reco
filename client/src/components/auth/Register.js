@@ -1,10 +1,12 @@
 import {React, useState} from 'react'
+import {connect} from 'react-redux'
+import {signUp} from '../../actions/auth'
+import  PropTypes from 'prop-types'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import axios from 'axios'
+import { sign } from 'jsonwebtoken'
 
-
-function Register() {
+function Register({signUp}) {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -17,33 +19,9 @@ function Register() {
 
     const onChange = (e) => setFormData({...formData, [e.target.id]: e.target.value})
 
-    const onSubmit = async e => {
+    const onSubmit = e => {
         e.preventDefault()
-        const newUser = {
-            firstName,
-            lastName,
-            email,
-            password,
-            passwordConfirm
-        }
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            // const body = JSON.stringify(newUser)
-            await axios.post('api/users/signup', newUser, config)
-            setFormData({
-              firstName: '',
-              lastName: '',
-              email: '',
-              password: '',
-              passwordConfirm: ''
-            })
-        } catch (error) {
-            console.log(error.response.data);
-        }
+        signUp({firstName, lastName, email, password, passwordConfirm})
     }
 
     return (
@@ -89,4 +67,8 @@ function Register() {
     )
 }
 
-export default Register
+Register.propTypes = {
+  signUp: PropTypes.func.isRequired
+}
+
+export default connect(null, {signUp})(Register)

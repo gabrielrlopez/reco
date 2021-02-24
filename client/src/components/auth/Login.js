@@ -1,10 +1,13 @@
 import {React, useState} from 'react'
+import {connect} from 'react-redux'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import axios from 'axios'
+import  PropTypes from 'prop-types'
+import {login} from '../../actions/auth'
  
 
-function Login() {
+function Login({login}) {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -16,20 +19,7 @@ function Login() {
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        const formInputs = {
-            email,
-            password
-        }
-        try {
-            const config ={ 
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            await axios.post('/api/users/login', formInputs, config)
-        } catch (error) {
-            console.log(error.response.data);
-        }
+        login({email, password})
     }
 
 
@@ -60,4 +50,8 @@ function Login() {
     )
 }
 
-export default Login
+Login.propType = {
+  login: PropTypes.func.isRequired
+}
+
+export default connect(null, {login})(Login)

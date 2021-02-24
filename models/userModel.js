@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     },
     lastName: {
         type: String,
-        required: [true, 'Please tell us your name!'],
+        required: [true, 'Please tell us your last name!'],
     },
     email: {
         type: String,
@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
                 message: "Oops! Passwords do no match"
         }
     },
+    passwordChangedAt: Date,
     date: {
         type: Date,
         default: Date.now()
@@ -56,6 +57,16 @@ userSchema.pre('save', function(next){
 //Comparing hashed password with user input
 userSchema.methods.correctPassword = async function(formInput, userPasssword){
     return await bcrypt.compare(formInput, userPasssword)
+}
+
+userSchema.methods.changedPassword = function(JWTTimestamp){
+    if(this.passwordChangedAt) {
+        //converting passwordChangedAt date to seconds and to an integer
+        const changedTimeStamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10)
+        return JWTTimestamp < changedTimeStamp
+    }
+    // false means password was not changed
+    return false
 }
 
 //Hash users passwords when modified and when creating new account

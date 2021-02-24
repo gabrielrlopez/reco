@@ -1,11 +1,37 @@
+const {promisify} = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../../models/userModel')
 const catchErrorsAsync = require('../../utils/catchAsync')
 const config = require('config')
 const AppError = require('../../utils/appError')
+const { decode } = require('punycode')
 
 const jwtSECRET = config.get('jwtSECRET')
 const jwtEXPIRESIN = config.get('jwtEXPIRESIN')
+const jwtCOOKIEEXPIRE = config.get('jwtCOOKIEEXPIRE')
+
+const signToken = (id) => {
+    return jwt.sign({id}, jwtSECRET, {
+        expiresIn: jwtEXPIRESIN
+    })
+}
+
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user.id)
+
+    const cookieOptions = {
+        expires: new Date(Date.now() + jwtEXPIRESIN * 24 * 60 * 60 * 1000),
+        // secure: true,
+        httpOnly: true
+    }
+
+    res.cookie('jwt', token, cookieOptions)
+
+    res.status(statusCode).json({
+        status: 'success',
+        token
+    })
+}
 
 exports.signUp = catchErrorsAsync(async(req, res, next) => {
     const  newUser = await User.create({
@@ -13,19 +39,10 @@ exports.signUp = catchErrorsAsync(async(req, res, next) => {
         lastName: req.body.lastName,
         email: req.body.email,
         password: req.body.password,
-        passwordConfirm: req.body.passwordConfirm
+        passwordConfirm: req.body.passwordConfirm,
     })
 
-    const token = jwt.sign({id: newUser._id}, jwtSECRET, {
-        expiresIn: jwtEXPIRESIN
-    })
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            user: newUser
-        }
-    })
+    createSendToken(newUser, 201, res)
 })
 
 
@@ -45,12 +62,32 @@ exports.login = catchErrorsAsync(async(req, res, next) => {
     } 
 
     //If everything is okay send token
-    const token = jwt.sign({id: user._id}, jwtSECRET, {
-        expiresIn: jwtEXPIRESIN
-    })
+    createSendToken(user, 200, res)
+})
 
-    res.status(200).json({
-        status: 'success',
-        token,
-    })
+exports.protect = catchErrorsAsync(async(req, res, next) => {
+    // 1) Getting token and check if it's there
+    let token
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+         token = req.headers.authorization.split(' ')[1]
+    }
+
+    if(!token) {
+        return next(new AppError('Your are not logged in! Please log in to get access.', 401))
+    }
+    // 2) Verification token 
+    const decoded = await promisify(jwt.verify)(token, jwtSECRET)
+    // 3) Check if user still exists
+    const currentUser = await User.findById(decoded.id)
+    if(!currentUser){
+        return next(new AppError('The user belonging to this token no longer exists'), 401)
+    }
+    // 4) Check if user changed password after token was issued 
+    if(currentUser.changedPassword(decoded.iat)){
+        next(new AppError('User recently changed password! Please log in again'), 401)
+    }
+
+    // Grant access to protected route
+    req.user = currentUser
+    next()
 })

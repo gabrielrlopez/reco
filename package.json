@@ -6,21 +6,27 @@
   "scripts": {
     "start": "node server",
     "server": "nodemon server",
+    "serverDev": "SET NODE_ENV=development&&nodemon server",
     "client": "npm start --prefix client",
     "debug": "ndb server.js",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run serverDev\" \"npm run client\""
   },
   "author": "GABRIEL ROSALES LOPEZ",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "config": "^3.3.3",
+    "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.0.2",
+    "express-rate-limit": "^5.2.6",
     "gravatar": "^1.8.1",
+    "helmet": "^4.4.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.16",
     "request": "^2.88.2",
-    "validator": "^13.5.2"
+    "validator": "^13.5.2",
+    "xss-clean": "^0.1.1"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
