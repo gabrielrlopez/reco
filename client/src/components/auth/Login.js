@@ -1,13 +1,14 @@
 import {React, useState} from 'react'
+import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import axios from 'axios'
 import  PropTypes from 'prop-types'
 import {login} from '../../actions/auth'
+import Container from 'react-bootstrap/esm/Container'
  
 
-function Login({login}) {
+function Login({login, isAuthenticated}) {
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -19,12 +20,17 @@ function Login({login}) {
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        login({email, password})
+        login(email, password)
+    }
+
+    //Redirect if logged in 
+    if(isAuthenticated){
+        return <Redirect to="/home" />
     }
 
 
     return (
-        <div>
+          <Container>
             <h1>Login</h1>
             <Form onSubmit={onSubmit}>
               <Form.Group>
@@ -46,12 +52,17 @@ function Login({login}) {
                 Submit
               </Button>
             </Form>
-        </div>
+          </Container>
     )
 }
 
 Login.propType = {
-  login: PropTypes.func.isRequired
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
 }
 
-export default connect(null, {login})(Login)
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps, {login})(Login)

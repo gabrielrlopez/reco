@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import {addBookToDB} from '../../actions/profile'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/esm/Col'
 import Form from 'react-bootstrap/Form'
@@ -7,20 +8,25 @@ import Card from 'react-bootstrap/Card'
 import CardColumns from 'react-bootstrap/CardColumns'
 import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/Row'
+import {connect} from 'react-redux'
+import  PropTypes from 'prop-types'
+import Spinner from './Spinner'
 
-
-
-function Books() {
+function Books({addBookToDB}) {
     const [searchInput, setSearchInput] = useState('')
     const [searchResults, setSearchResults] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const onChange = (e) => setSearchInput(e.target.value)
 
     const searchGoogleBooks = async (input) => {
+       setLoading(true)
+       if(!input) return (setLoading(false))
        const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=10&key=${process.env.REACT_APP_BOOK_API_KEY}`)
        const books = data.data['items'].map(book => {
             const {volumeInfo} = book
             book = {
+                // googleId: book.id,
                 title: volumeInfo.title,
                 authors: volumeInfo.authors,
                 publisher: volumeInfo.publisher,
@@ -36,7 +42,8 @@ function Books() {
             return book
        })
        const bookResults = books.filter(book => book.cover !== undefined )
-       setSearchResults(bookResults)
+       setSearchResults(bookResults) 
+       setLoading(false)
     }
 
     const onSubmit = (e) => {
@@ -44,7 +51,29 @@ function Books() {
         searchGoogleBooks(searchInput)
     }
 
-    console.log(searchResults)
+    const favorite = async(e) => {
+        e.preventDefault()
+        try {
+            const book = searchResults.find(book => book.title === e.target.value)
+            book.cover = book.cover.thumbnail
+            book.addedTo = 'favorites'
+            addBookToDB(book)
+        } catch (error) {
+            console.error(error.message)
+        }
+    }
+
+    const readLater = async(e) => {
+        e.preventDefault()
+        try {
+            const book = searchResults.find(book => book.title === e.target.value)
+            book.cover = book.cover.thumbnail
+            book.addedTo = 'readLater'
+            addBookToDB(book)
+        } catch (error) {
+            console.error(error.message)
+        }
+    }
 
     return (
         <Container>
@@ -64,10 +93,12 @@ function Books() {
                 </Form.Row>
             </Form>
             <br></br>
-        <CardColumns>
+        {loading ? <Spinner /> : <CardColumns>
             {searchResults.map(book => {
+                console.log(book)
                 const {thumbnail} = book.cover
-                return <Card 
+                return <Card
+                key={book.title}
                 border="secondary"
                 style={{width: '18rem'}}
                 className='text-center'
@@ -86,8 +117,19 @@ function Books() {
                             className="justify-content-md-center"
                             style={{padding: '5px'}}
                             >
-                                <Button style={{marginRight: '5px'}} variant="primary">Favorite</Button>
-                                <Button variant="primary">Read later</Button>
+                                <Button 
+                                onClick={favorite}
+                                style={{marginRight: '5px'}}
+                                value={book.title}
+                                variant="primary">
+                                    Favorite
+                                </Button>
+                                <Button
+                                onClick={readLater}
+                                value={book.title}
+                                variant="primary">
+                                    Read later
+                                </Button>
                             </Row>
                             <Button variant="danger">Reco a friend</Button>
                             </Container>
@@ -95,9 +137,13 @@ function Books() {
                     </Card.Body>    
                 </Card>
             })}
-        </CardColumns>
+        </CardColumns>}
         </Container>
     )
 }
 
-export default Books
+Books.propType ={
+    addBookToDB: PropTypes.func.isRequired,
+}
+
+export default connect(null, {addBookToDB})(Books)

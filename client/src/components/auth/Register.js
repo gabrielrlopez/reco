@@ -1,12 +1,13 @@
 import {React, useState} from 'react'
+import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {signUp} from '../../actions/auth'
 import  PropTypes from 'prop-types'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { sign } from 'jsonwebtoken'
+import Container from 'react-bootstrap/esm/Container'
 
-function Register({signUp}) {
+function Register({signUp, isAuthenticated}) {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -21,11 +22,15 @@ function Register({signUp}) {
 
     const onSubmit = e => {
         e.preventDefault()
-        signUp({firstName, lastName, email, password, passwordConfirm})
+        signUp(firstName, lastName, email, password, passwordConfirm)
+    }
+
+    if(isAuthenticated){
+     return <Redirect to="/home" />
     }
 
     return (
-        <div>
+          <Container>
             <h1>Sign Up</h1>
             <Form onSubmit={e => onSubmit(e)}>
 
@@ -63,12 +68,17 @@ function Register({signUp}) {
               </Button>
 
             </Form>
-        </div>
+          </Container>
     )
 }
 
 Register.propTypes = {
-  signUp: PropTypes.func.isRequired
+  signUp: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool,
 }
 
-export default connect(null, {signUp})(Register)
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps, {signUp})(Register)

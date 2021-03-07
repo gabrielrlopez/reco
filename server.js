@@ -47,6 +47,11 @@ app.use(xss())
 
 app.use('/api', limiter)
 
+// Test middleware 
+app.use((req, res, next) => {
+    next()
+})
+
 //Routes
 app.use('/api/users', userRoutes)
 app.use('/api/profiles', profileRoutes)

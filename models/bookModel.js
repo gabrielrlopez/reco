@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 
 const bookSchema = new mongoose.Schema ({
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: [true, 'Book must belong to a user library']
+    },
     googleID: {
         type: String,
         required: [true, 'We cannot obtain the id for this book from Google. Please try a different title or another instance of this title.'],
@@ -27,6 +32,7 @@ const bookSchema = new mongoose.Schema ({
     maturityRating: String,
     cover: [String],
     previewLink: String
+
 }) 
 
 const Book = mongoose.model('Book', bookSchema)

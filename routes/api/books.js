@@ -1,12 +1,12 @@
  const express = require('express')
  const router = express.Router()
  const authController = require('../controllers/authController')
- 
  const booksController = require('../controllers/booksController')
 
  router.route('/')
-    .post(booksController.newBook)
-    .get(authController.protect, booksController.getMyBooks)
+ .post(authController.protect, booksController.newBook)
+ router.get('/my-books', authController.protect, booksController.getMyBooks)
+
 
 
 module.exports = router

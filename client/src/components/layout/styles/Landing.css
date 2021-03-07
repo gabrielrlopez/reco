@@ -1,0 +1,10 @@
+.body {
+  background-image: linear-gradient(
+    to bottom,
+    #aeaeae,
+    #ada8c3,
+    #aba2d8,
+    #aa9bec,
+    #a893ff
+  );
+}

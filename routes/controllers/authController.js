@@ -4,7 +4,6 @@ const User = require('../../models/userModel')
 const catchErrorsAsync = require('../../utils/catchAsync')
 const config = require('config')
 const AppError = require('../../utils/appError')
-const { decode } = require('punycode')
 
 const jwtSECRET = config.get('jwtSECRET')
 const jwtEXPIRESIN = config.get('jwtEXPIRESIN')
@@ -20,7 +19,7 @@ const createSendToken = (user, statusCode, res) => {
     const token = signToken(user.id)
 
     const cookieOptions = {
-        expires: new Date(Date.now() + jwtEXPIRESIN * 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + jwtCOOKIEEXPIRE * 24 * 60 * 60 * 1000),
         // secure: true,
         httpOnly: true
     }
@@ -60,16 +59,53 @@ exports.login = catchErrorsAsync(async(req, res, next) => {
     if(!user || !(await user.correctPassword(password, user.password))){
         return next(new AppError('Oops! Incorrect password or email', 400))
     } 
-
     //If everything is okay send token
     createSendToken(user, 200, res)
 })
+
+exports.logout = async(req, res) => {
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+    res.status(200).json(
+        {
+            status: 'success'
+        })
+}
+
+
+//Only for rendered pages
+exports.isLoggedIn = async(req, res, next) => {
+    // 1) Check if token exists
+    if(req.cookies.jwt){
+        try {
+            // 2) Verification token 
+            const decoded = await promisify(jwt.verify)(req.cookies.jwt, jwtSECRET)
+            // 3) Check if user still exists
+            const currentUser = await User.findById(decoded.id)
+            if(!currentUser) return next()
+            // 4) Check if user changed password after token was issued 
+            if(currentUser.changedPassword(decoded.iat)){
+                return next()
+            }
+            // there is a logged in user
+            res.json(currentUser)
+        } catch (error) {
+            return next()
+        }
+    }
+    return next()
+}
+
 
 exports.protect = catchErrorsAsync(async(req, res, next) => {
     // 1) Getting token and check if it's there
     let token
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
          token = req.headers.authorization.split(' ')[1]
+    } else if(req.cookies.jwt){
+        token = req.cookies.jwt
     }
 
     if(!token) {
@@ -91,3 +127,5 @@ exports.protect = catchErrorsAsync(async(req, res, next) => {
     req.user = currentUser
     next()
 })
+
+
