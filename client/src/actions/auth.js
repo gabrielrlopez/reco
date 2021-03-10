@@ -1,5 +1,6 @@
 import api from '../utils/api'
 import {setAlert} from './alert'
+import {createUpdateProfile} from './profile'
 import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
@@ -32,6 +33,7 @@ export const signUp = (firstName, lastName, email, password, passwordConfirm) =>
             type: REGISTER_SUCCESS,
             payload: res.data
         })
+        dispatch(createUpdateProfile())
         dispatch(setAlert('Registration successful, welcome!', 'success', 1500))
         dispatch(loadUser())
     } catch (error) {
@@ -71,7 +73,7 @@ export const login = (email, password) => async dispatch => {
 
 export const logout = () => async dispatch => {
     const res = await api.get('/users/logout')
-    if(res.data.status === 'success') window.location.reload(true)
+    if(res.data.status === 'success') window.location.reload()
     dispatch({
         type: {LOGOUT}
     })

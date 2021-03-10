@@ -12,7 +12,14 @@ import FormControl from 'react-bootstrap/FormControl'
 const navbar = ({logout, auth: {isAuthenticated, loading}}) => {
     const authLinks = (
       <>
-      <Nav.Link href="/my-base">myBase</Nav.Link>
+      <NavDropdown title="myBase" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/myBase/books">Books</NavDropdown.Item>
+        <NavDropdown.Item href="#!">Video Games</NavDropdown.Item>
+        <NavDropdown.Item href="#!">Movies</NavDropdown.Item>
+        <NavDropdown.Item href="#!">Netflix Movies</NavDropdown.Item>
+        <NavDropdown.Item href="#!">Food</NavDropdown.Item>
+        <NavDropdown.Item href="#!">Recipes</NavDropdown.Item>
+      </NavDropdown>
       <Nav.Link href="#!">myRecommendations</Nav.Link>
       <NavDropdown title="Send New Recommendation" id="basic-nav-dropdown">
         <NavDropdown.Item href="/send-new-reco/books">Books</NavDropdown.Item>
@@ -36,7 +43,7 @@ const navbar = ({logout, auth: {isAuthenticated, loading}}) => {
     return (
         <div>
             <Navbar bg="light" variant="light">
-              <Navbar.Brand href="/landing">Reco</Navbar.Brand>
+              <Navbar.Brand href="/">Reco</Navbar.Brand>
               <Nav className="mr-auto">
                 {!loading && isAuthenticated ? authLinks : guestLinks}
               </Nav>

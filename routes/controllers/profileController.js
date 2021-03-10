@@ -4,27 +4,10 @@ const catchErrorsAsync = require('../../utils/catchAsync')
 const AppError = require('../../utils/appError')
 
 exports.createUpdateProfile = catchErrorsAsync(async(req, res, next) => {
-    const {
-        twitter,
-        instagram,
-        linkedin,
-        facebook,
-        // ...rest
-    } = req.body
-
-    const {book} = req.body
-
-
-
     const profileFields = {
         user: req.user.id,
-        books: book
-        // ...rest
     }
-
-    const socialFields = {twitter, instagram, linkedin, facebook }
-    profileFields.social = socialFields
-
+    
     let profile = await Profile.findOne({user: req.user.id})
     if(profile) {
         profile = await Profile.findOneAndUpdate(
@@ -40,8 +23,27 @@ exports.createUpdateProfile = catchErrorsAsync(async(req, res, next) => {
 
 exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
     const book = req.body
+    const {googleId} = book
     const profile = await Profile.findOne({user: req.user.id})
+
+    //Check if book has already been added to the users favorites/readLater
+    profile.books.favorites.map(book => {
+        if(book.googleId === googleId) return next(new AppError('This book is already saved to your base.', 500))
+    })
+    profile.books.readLater.map(book => {
+        if(book.googleId === googleId) return next(new AppError('This book is already saved to your base.', 500))
+    })
+
     profile.books[book.addedTo].push(book)
+    await profile.save()
+    res.json(profile)
+})
+
+exports.deleteBook = catchErrorsAsync(async(req, res, next) => {
+    const profile = await Profile.findOne({user: req.user.id})
+    console.log(profile)
+    const removeIndex = profile.books.favorites.map(book => book._id).indexOf(req.param.book_id)
+    profile.books.favorites.splice(removeIndex, 1)
     await profile.save()
     res.json(profile)
 })
@@ -49,9 +51,7 @@ exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
 exports.getMyProfile = catchErrorsAsync(async(req, res, next) => {
     const profile = await Profile.findOne({
         user: req.user.id
-    }).populate('user', ['firstName', 'lastName'])
-
-    console.log(profile)
+    })
 
     if(!profile) next(new AppError('This user does not exist. Please sign up for an account. If you forgot the email or password please follow this link and follow the prompts to recover your account..'))
 

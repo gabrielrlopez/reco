@@ -25,7 +25,6 @@ export const getCurrentProfile = () => async dispatch => {
 
 export const createUpdateProfile = () => async dispatch => {
     try {
-
         const res = await api.post('/profiles/me')
         dispatch({
             type: UPDATE_PROFILE,
@@ -46,10 +45,29 @@ export const addBookToDB = (book) => async dispatch => {
             type: UPDATE_PROFILE,
             payload: res.data
         })
-        console.log(res.data);
         dispatch(setAlert('Book added to your base!', 'success', 3000))
     } catch (error) {
-        const errors = error.response
+        const errors = error.response.data
+        if(errors){
+            console.log(errors)
+            dispatch(setAlert(errors.message, 'danger', 3000))
+        }
+        dispatch({
+            type: PROFILE_ERROR,
+            payload: error
+        })
+    }
+}
+
+export const deleteBookFromMyBase = (id) => async dispatch => {
+    try {
+        const res = await api.delete(`/profiles/me/myBooks/${id}`)
+        dispatch({
+            type: UPDATE_PROFILE,
+            payload: res
+        })
+    } catch (error) {
+        const errors = error.response.data
         if(errors){
             console.log(errors)
             dispatch(setAlert(errors.message, 'danger', 3000))

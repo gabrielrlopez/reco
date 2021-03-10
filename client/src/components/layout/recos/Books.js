@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {addBookToDB} from '../../actions/profile'
+import {addBookToDB} from '../../../actions/profile'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/esm/Col'
 import Form from 'react-bootstrap/Form'
@@ -10,7 +10,7 @@ import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/Row'
 import {connect} from 'react-redux'
 import  PropTypes from 'prop-types'
-import Spinner from './Spinner'
+import Spinner from '../Spinner'
 
 function Books({addBookToDB}) {
     const [searchInput, setSearchInput] = useState('')
@@ -26,7 +26,7 @@ function Books({addBookToDB}) {
        const books = data.data['items'].map(book => {
             const {volumeInfo} = book
             book = {
-                // googleId: book.id,
+                googleId: book.id,
                 title: volumeInfo.title,
                 authors: volumeInfo.authors,
                 publisher: volumeInfo.publisher,
@@ -46,12 +46,15 @@ function Books({addBookToDB}) {
        setLoading(false)
     }
 
+    //Perform get request to Google Books api 
     const onSubmit = (e) => {
         e.preventDefault()
+        if(!searchInput) return
         searchGoogleBooks(searchInput)
     }
-
-    const favorite = async(e) => {
+    
+    //Add books to users profile
+    const favorite = (e) => {
         e.preventDefault()
         try {
             const book = searchResults.find(book => book.title === e.target.value)
@@ -63,17 +66,19 @@ function Books({addBookToDB}) {
         }
     }
 
-    const readLater = async(e) => {
+    const readLater = (e) => {
         e.preventDefault()
         try {
             const book = searchResults.find(book => book.title === e.target.value)
-            book.cover = book.cover.thumbnail
-            book.addedTo = 'readLater'
-            addBookToDB(book)
+            console.log(book)
+            // book.addedTo = 'readLater'
+            // addBookToDB(book)
         } catch (error) {
             console.error(error.message)
         }
     }
+
+    console.log(searchResults)
 
     return (
         <Container>
@@ -93,9 +98,8 @@ function Books({addBookToDB}) {
                 </Form.Row>
             </Form>
             <br></br>
-        {loading ? <Spinner /> : <CardColumns>
+            {loading ? <Spinner /> : <CardColumns>
             {searchResults.map(book => {
-                console.log(book)
                 const {thumbnail} = book.cover
                 return <Card
                 key={book.title}
@@ -112,7 +116,6 @@ function Books({addBookToDB}) {
                         </Card.Title>
                         <Card.Body>
                             <img src={thumbnail}/>
-                            <Container>
                             <Row 
                             className="justify-content-md-center"
                             style={{padding: '5px'}}
@@ -132,7 +135,6 @@ function Books({addBookToDB}) {
                                 </Button>
                             </Row>
                             <Button variant="danger">Reco a friend</Button>
-                            </Container>
                         </Card.Body>
                     </Card.Body>    
                 </Card>
