@@ -25,6 +25,7 @@ function Books({addBookToDB}) {
        const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=10&key=${process.env.REACT_APP_BOOK_API_KEY}`)
        const books = data.data['items'].map(book => {
             const {volumeInfo} = book
+            
             book = {
                 googleId: book.id,
                 title: volumeInfo.title,
@@ -39,11 +40,18 @@ function Books({addBookToDB}) {
                 cover: volumeInfo.imageLinks,
                 previewLink: volumeInfo.previewLink
             }
+            console.log(book.authors)
             return book
        })
        const bookResults = books.filter(book => book.cover !== undefined )
        setSearchResults(bookResults) 
        setLoading(false)
+    }
+    
+    //if book has more than one author render every author on a new line
+    const formatAuthors = (arr) => {
+        if(arr === undefined) return
+        return arr.length > 1 ? arr.map(author =>(<Card.Title>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
     }
 
     //Perform get request to Google Books api 
@@ -70,9 +78,9 @@ function Books({addBookToDB}) {
         e.preventDefault()
         try {
             const book = searchResults.find(book => book.title === e.target.value)
-            console.log(book)
-            // book.addedTo = 'readLater'
-            // addBookToDB(book)
+            book.cover = book.cover.thumbnail
+            book.addedTo = 'readLater'
+            addBookToDB(book)
         } catch (error) {
             console.error(error.message)
         }
@@ -111,9 +119,9 @@ function Books({addBookToDB}) {
                         <Card.Header>
                             {book.title}
                         </Card.Header>
-                        <Card.Title>
-                            {book.authors}
-                        </Card.Title>
+
+                           {formatAuthors(book.authors)}
+
                         <Card.Body>
                             <img src={thumbnail}/>
                             <Row 

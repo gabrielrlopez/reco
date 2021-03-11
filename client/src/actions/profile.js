@@ -59,13 +59,14 @@ export const addBookToDB = (book) => async dispatch => {
     }
 }
 
-export const deleteBookFromMyBase = (id) => async dispatch => {
+export const deleteBookFromMyBase = (book) => async dispatch => {
     try {
-        const res = await api.delete(`/profiles/me/myBooks/${id}`)
+        const res = await api.put(`/profiles/me/myBooks/${book._id}`, book)
         dispatch({
             type: UPDATE_PROFILE,
             payload: res
         })
+        dispatch(setAlert('Book successfully removed from your base', 'success', 3000))
     } catch (error) {
         const errors = error.response.data
         if(errors){

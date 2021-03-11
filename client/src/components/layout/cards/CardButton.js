@@ -1,10 +1,9 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button'
 
-const CardButton = ({onClickFunction, style, value, variant, caption, id}) => {
-    console.log(id)
+const CardButton = ({onClickFunction, style, value, variant, caption, book}) => {
     return <Button
-            onClick={() => onClickFunction(id)}
+            onClick={() => onClickFunction(book)}
             style={style}
             value={value}
             variant={variant}

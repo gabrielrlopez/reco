@@ -12,30 +12,50 @@ const MyBooks = ({getCurrentProfile, deleteBookFromMyBase, profile: {profile, lo
         getCurrentProfile()
     }, [])
 
+    
     return  <Fragment>
             <h1>MyBase</h1>
             <h2>Favorites</h2>
             {profile ? 
-            <div className="base-container">
-                {loading && profile === null ? <Spinner/> : profile.data.books.favorites.map(book =>
-                    <BookCard
-                        title={book.title}
-                        authors={book.authors}
-                        cover={book.cover}
-                        id={book._id}
-                        onClickFunction={deleteBookFromMyBase}
-                        caption={'Remove'}
-                        variant={'warning'}
-                        caption2={'Reco A Friend'}
-                        variant2={'danger'}
-                    />
-                )}
-            </div>
-            :
-            null
+                    <div className="base-container">
+                        {loading && profile === null ? <Spinner/> : profile.data.books.favorites.map(book =>
+                            <BookCard
+                                title={book.title}
+                                authors={book.authors}
+                                cover={book.cover}
+                                book={book}
+                                onClickFunction={deleteBookFromMyBase}
+                                caption={'Remove'}
+                                variant={'warning'}
+                                caption2={'Reco A Friend'}
+                                variant2={'danger'}
+                            />
+                        )}
+                    </div>
+                :
+                null
             }
-
             <h2>Read Later</h2>
+            {profile ? 
+                    <div className="base-container">
+                    {loading && profile === null ? <Spinner/> : profile.data.books.readLater.map(book =>
+                        <BookCard
+                            title={book.title}
+                            authors={book.authors}
+                            cover={book.cover}
+                            book={book}
+                            type={book.addedTo}
+                            onClickFunction={deleteBookFromMyBase}
+                            caption={'Remove'}
+                            variant={'warning'}
+                            caption2={'Reco A Friend'}
+                            variant2={'danger'}
+                        />
+                    )}
+                    </div>
+                :
+                null
+            }
             </Fragment>
 }
 

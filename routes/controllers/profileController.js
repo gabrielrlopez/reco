@@ -40,10 +40,11 @@ exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
 })
 
 exports.deleteBook = catchErrorsAsync(async(req, res, next) => {
+    const book = req.body
+    const type = book.addedTo
     const profile = await Profile.findOne({user: req.user.id})
-    console.log(profile)
-    const removeIndex = profile.books.favorites.map(book => book._id).indexOf(req.param.book_id)
-    profile.books.favorites.splice(removeIndex, 1)
+    const removeIndex = profile.books[type].map(book => book._id).indexOf(req.params.book_id)
+    profile.books[type].splice(removeIndex, 1)   
     await profile.save()
     res.json(profile)
 })

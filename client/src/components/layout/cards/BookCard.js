@@ -11,18 +11,26 @@ const BookCard = (
         authors, 
         cover, 
         onClickFunction, 
-        style, 
+        book,
         value, 
         variant, 
         caption,
-        id, 
-        style2, 
+        style, 
+        onClickFunction2,
+        book2,
         value2, 
         variant2, 
         caption2,
-        onClickFunction2
+        style2, 
+    }) => {
+
+
+    //if book has more than one author render every author on a new line
+    const formatAuthors = (arr) => {
+        if(arr === undefined) return
+        return arr.length > 1 ? arr.map(author =>(<Card.Title>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
     }
-    ) => {
+
     return <Card
     key={title}
     border="secondary"
@@ -33,19 +41,18 @@ const BookCard = (
             <Card.Header>
                 {title}
             </Card.Header>
-            <Card.Title>
-                {authors}
-            </Card.Title>
+            {formatAuthors(authors)}
             <Card.Body>
                 <img src={cover}/>
                 <CardButton
                     onClickFunction={onClickFunction}
-                    id={id}
+                    book={book}
                     caption={caption}
                     variant={variant}
                 />
                 <CardButton
                     onClickFunction={onClickFunction2}
+                    book={book2}
                     caption={caption2}
                     variant={variant2}
                 />

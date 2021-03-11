@@ -29,7 +29,8 @@ const book = {
     cover: {
         type: String,
     },
-    previewLink: String
+    previewLink: String,
+    addedTo: String
 }
 
 const profileSchema = new mongoose.Schema({

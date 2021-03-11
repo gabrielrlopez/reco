@@ -12,6 +12,6 @@ router.route('/me')
 router.put('/me/myBooks', authController.protect, profileController.addBookToDB)
 
 //delete a book from users mybase
-router.delete('/me/myBooks/:book_id', authController.protect, profileController.deleteBook)
+router.put('/me/myBooks/:book_id', authController.protect, profileController.deleteBook)
 
 module.exports = router
