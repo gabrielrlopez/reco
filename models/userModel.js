@@ -3,13 +3,22 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 
 const userSchema = new mongoose.Schema({
+    userName: {
+        type: String,
+        required: [true, 'Please enter a username. This is how you will be found by other users.'],
+        unique: [true, 'Oops! Looks like this username is already in use. Please enter a different username.'],
+        minLength: [6, 'Oh c\'mon that\'s a short username let\'s make it more interesting! At least make it 6 characters long!'],
+        maxLength: [16, 'Okay, that\'s a bit too interesting.. Let\'s not get too carried away. No longer than 12 characters long.']
+    },
     firstName: {
         type: String,
         required: [true, 'Please tell us your name!'],
+        uppercase: true
     },
     lastName: {
         type: String,
         required: [true, 'Please tell us your last name!'],
+        uppercase: true
     },
     email: {
         type: String,

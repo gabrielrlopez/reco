@@ -2,15 +2,19 @@ import React, {useEffect, Fragment} from 'react'
 import Spinner from './Spinner'
 import {connect} from 'react-redux'
 import  {getCurrentProfile} from '../../actions/profile'
+import  {loadUser} from '../../actions/auth'
 import  PropTypes from 'prop-types'
 import Container from 'react-bootstrap/esm/Container'
-function Home({getCurrentProfile, auth, profile: {profile, loading}}) {
+function Home({getCurrentProfile, profile: {profile, loading}}) {
     useEffect(() => {
         getCurrentProfile()
     }, [])
 
     return <Container>
-        {loading && profile === null ? <Spinner /> : <Fragment>Test</Fragment>}
+        {loading && profile === null ? <Spinner /> : 
+        <Fragment>Welcome back 
+            <h1></h1>
+        </Fragment>}
     </Container> 
 }
 

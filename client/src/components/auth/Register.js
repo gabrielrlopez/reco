@@ -9,6 +9,7 @@ import Container from 'react-bootstrap/esm/Container'
 
 function Register({signUp, isAuthenticated}) {
     const [formData, setFormData] = useState({
+        userName: '',
         firstName: '',
         lastName: '',
         email: '',
@@ -16,13 +17,13 @@ function Register({signUp, isAuthenticated}) {
         passwordConfirm: ''
     })
 
-    const {firstName, lastName, email, password, passwordConfirm} = formData
+    const {userName, firstName, lastName, email, password, passwordConfirm} = formData
 
     const onChange = (e) => setFormData({...formData, [e.target.id]: e.target.value})
 
     const onSubmit = e => {
         e.preventDefault()
-        signUp(firstName, lastName, email, password, passwordConfirm)
+        signUp(userName, firstName, lastName, email, password, passwordConfirm)
     }
 
     if(isAuthenticated){
@@ -33,6 +34,11 @@ function Register({signUp, isAuthenticated}) {
           <Container>
             <h1>Sign Up</h1>
             <Form onSubmit={e => onSubmit(e)}>
+
+              <Form.Group>
+                <Form.Label>User Name</Form.Label>
+                <Form.Control type="text" placeholder="ex: user1234" id="userName" value={userName} onChange={e => onChange(e)}/>
+              </Form.Group>
 
               <Form.Group>
                 <Form.Label>First Name</Form.Label>

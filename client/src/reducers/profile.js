@@ -3,10 +3,12 @@ import {
     GET_PROFILES,
     UPDATE_PROFILE,
     PROFILE_ERROR,
+    GET_SEARCHED_PROFILE,
 } from '../actions/types'
 
 const initialState = {
     profile: null,
+    searchedProfile: null,
     profiles: [],
     loading: true,
     error: {}
@@ -22,7 +24,12 @@ export default function(state = initialState, action){
                 ...state,
                 profile: payload,
                 loading: false
-            } 
+            }
+        case GET_SEARCHED_PROFILE:
+            return {
+                searchedProfile: payload,
+                loading: false
+            }
         case GET_PROFILES:
             return {
                 ...state,

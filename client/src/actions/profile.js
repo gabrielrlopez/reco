@@ -3,19 +3,42 @@ import {setAlert} from './alert'
 import {
     GET_PROFILE,
     UPDATE_PROFILE,
+    GET_SEARCHED_PROFILE,
+    GET_PROFILES,
     PROFILE_ERROR,
-    GET_PROFILES
 } from './types'
 
 export const getCurrentProfile = () => async dispatch => {
     try {
         const res = await api.get('/profiles/me')
-        console.log(res.data)
         dispatch({
             type: GET_PROFILE,
             payload: res.data
         })
     } catch (error) {
+        dispatch({
+            type: PROFILE_ERROR,
+            payload: error
+        })
+    }
+}
+
+export const getSearchedProfile = (searchInput) => async dispatch => {
+    try {
+        const query = {
+            userName: searchInput
+        }
+        const res = await api.post('profiles/search', query)
+        dispatch({
+            type: GET_SEARCHED_PROFILE,
+            payload: res.data
+        })
+    } catch (error) {
+        const errors = error.response.data
+        if(errors){
+            console.log(errors)
+            dispatch(setAlert(errors.message, 'danger', 3000))
+        }
         dispatch({
             type: PROFILE_ERROR,
             payload: error
@@ -38,46 +61,6 @@ export const createUpdateProfile = () => async dispatch => {
     }
 }
 
-export const addBookToDB = (book) => async dispatch => {
-    try {
-        const res = await api.put('/profiles/me/myBooks', book)
-        dispatch({
-            type: UPDATE_PROFILE,
-            payload: res.data
-        })
-        dispatch(setAlert('Book added to your base!', 'success', 3000))
-    } catch (error) {
-        const errors = error.response.data
-        if(errors){
-            console.log(errors)
-            dispatch(setAlert(errors.message, 'danger', 3000))
-        }
-        dispatch({
-            type: PROFILE_ERROR,
-            payload: error
-        })
-    }
-}
 
-export const deleteBookFromMyBase = (book) => async dispatch => {
-    try {
-        const res = await api.put(`/profiles/me/myBooks/${book._id}`, book)
-        dispatch({
-            type: UPDATE_PROFILE,
-            payload: res
-        })
-        dispatch(setAlert('Book successfully removed from your base', 'success', 3000))
-    } catch (error) {
-        const errors = error.response.data
-        if(errors){
-            console.log(errors)
-            dispatch(setAlert(errors.message, 'danger', 3000))
-        }
-        dispatch({
-            type: PROFILE_ERROR,
-            payload: error
-        })
-    }
-}
 
 

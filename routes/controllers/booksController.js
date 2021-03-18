@@ -1,37 +1,37 @@
-const User = require('../../models/userModel')
-const Book = require('../../models/bookModel')
+const Profile = require('../../models/profileModel')
 const catchErrorsAsync = require('../../utils/catchAsync')
+const AppError = require('../../utils/appError')
 
-exports.newBook = catchErrorsAsync(async(req, res, next) => {
-        const {user} = req
-        if(!user) return next()
-        const newBook = await Book.create(req.body)
-        res.status(201).json({
-            status: 'success',
-            data: {
-                books: newBook
-            }
-        })
+exports.checkForDuplicateBooks = catchErrorsAsync(async(req, res, next) => {
+    const book = req.body
+    const {googleId} = book
+    const profile = await Profile.findOne({user: req.user.id})
+    const favorites = profile.userBase.books.favorites
+    const readLater = profile.userBase.books.readLater
+    favorites.map(book => {
+        if(book.googleId === googleId) return next(new AppError('This book is already saved to your base.', 500))
+    })
+    readLater.map(book => {
+        if(book.googleId === googleId) return next(new AppError('This book is already saved to your base.', 500))
+    })
+    next()
 })
 
-exports.getMyBooks = async(req, res, next) => {
-    try {
-        const myBooks = await Book.findOne({user: req.user.id})
+exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
+    const book = req.body
+    const profile = await Profile.findOne({user: req.user.id})
+    profile.userBase.books[book.addedTo].push(book)
+    await profile.save()
+    res.json(profile)
+})
 
-        if(!myBooks){
-            return res.status(400).json({msg: `You haven't saved any books to your library.`})
-        }
 
-        res.status(201).json({
-            status: 'success',
-            data: {
-                books: myBooks
-            }
-        })
-    } catch (error) {
-        res.status(400).json({
-            status: 'fail',
-            message: error
-        })
-    }
-}
+exports.deleteBook = catchErrorsAsync(async(req, res, next) => {
+    const book = req.body
+    const type = book.addedTo
+    const profile = await Profile.findOne({user: req.user.id})
+    const removeIndex = profile.userBase.books[type].map(book => book._id).indexOf(req.params.book_id)
+    profile.userBase.books[type].splice(removeIndex, 1)   
+    await profile.save()
+    res.json(profile)
+})

@@ -10,6 +10,8 @@ import Home from './components/layout/Home'
 import Landing from './components/layout/Landing'
 import Books from './components/layout/recos/Books'
 import MyBooks from './components/layout/myBase/MyBooks'
+import MyRecos from './components/layout/myRecos/MyRecos'
+import Users from './components/layout/Users'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 //Redux
@@ -21,22 +23,22 @@ const App = () => {
     useEffect(() => {
         store.dispatch(loadUser())
     }, [])
-
+    
     return (
     <Provider store={store}>
         <BrowserRouter>
-            <Fragment>
-                <Navbar />
-                <Alert />
+                  <Navbar />
+                  <Alert />
                   <Switch>
                   <Route exact path='/' component={Landing}/>
                   <Route exact path='/register' component={Register}/>
                   <Route exact path='/login' component={Login}/>
                   <PrivateRoute exact path='/home' component={Home}/>
                   <PrivateRoute exact path='/myBase/books' component={MyBooks}/>
+                  <PrivateRoute exact path='/myRecos' component={MyRecos} />
                   <PrivateRoute exact path='/send-new-reco/books' component={Books}/>
+                  <PrivateRoute exact path='/searchFriends' component={Users}/>
                   </Switch>
-            </Fragment>
         </BrowserRouter> 
     </Provider>
 )}

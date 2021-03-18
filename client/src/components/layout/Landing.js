@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import Container from 'react-bootstrap/esm/Container'
 
 function Landing({auth: {isAuthenticated}}) {
-    console.log(isAuthenticated);
     if(isAuthenticated) {
        return <Redirect to='/home'/>
     }

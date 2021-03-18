@@ -4,8 +4,6 @@ const validator = require('validator')
 const book = {
     googleId: {
         type: String,
-        required: [true, 'We cannot obtain the id for this book from Google. Please try a different title or another instance of this title.'],
-        unique: true
     },
     title: {
         type: String,
@@ -39,12 +37,41 @@ const profileSchema = new mongoose.Schema({
         ref: 'User',
         required: [true, 'Book must belong to a user library']
     },
+    userBase: {
+        books: {
+            favorites: [book],
+            readLater: [book]
+        },
+        videoGames: {
+            favorites: [],
+            wantToPlay: []
+        },
+    },
     bio: {
         type: String
     },
-    books:  {   
-            favorites: [book],
-            readLater: [book]
+    friends: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User',
+            required: [true, 'Book must belong to a user library']
+        },
+    ],
+    friendRequests: {
+        requests: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                required: [true, 'Book must belong to a user library']
+            },
+        ],
+        sentRequests: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                required: [true, 'Book must belong to a user library']
+            },
+        ]
     },
     social: {
         facebook: {

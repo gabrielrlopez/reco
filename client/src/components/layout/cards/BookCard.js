@@ -28,11 +28,11 @@ const BookCard = (
     //if book has more than one author render every author on a new line
     const formatAuthors = (arr) => {
         if(arr === undefined) return
-        return arr.length > 1 ? arr.map(author =>(<Card.Title>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
+        return arr.length > 1 ? arr.map((author, i) =>(<Card.Title key={i}>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
     }
 
     return <Card
-    key={title}
+    key={book.googleId}
     border="secondary"
     style={{width: '18rem'}}
     className='text-center'

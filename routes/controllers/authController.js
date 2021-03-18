@@ -34,6 +34,7 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signUp = catchErrorsAsync(async(req, res, next) => {
     const  newUser = await User.create({
+        userName: req.body.userName,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
@@ -48,8 +49,6 @@ exports.signUp = catchErrorsAsync(async(req, res, next) => {
 exports.login = catchErrorsAsync(async(req, res, next) => {
     const {email} = req.body
     const {password} = req.body
-
-
     //Check if email and password exist 
     if(!email || !password) {
         return next(new AppError('Please enter your email and password', 400))
@@ -90,12 +89,11 @@ exports.isLoggedIn = async(req, res, next) => {
                 return next()
             }
             // there is a logged in user
-            res.json(currentUser)
+            return res.json(currentUser)
         } catch (error) {
             return next()
         }
     }
-    return next()
 }
 
 
@@ -122,7 +120,6 @@ exports.protect = catchErrorsAsync(async(req, res, next) => {
     if(currentUser.changedPassword(decoded.iat)){
         next(new AppError('User recently changed password! Please log in again'), 401)
     }
-
     // Grant access to protected route
     req.user = currentUser
     next()

@@ -14,42 +14,16 @@ exports.createUpdateProfile = catchErrorsAsync(async(req, res, next) => {
             {user: req.user.id},
             {$set: profileFields},
             {new: true})
-        return res.json(profile)
     }
     profile = new Profile(profileFields)
     await profile.save()
     res.json(profile)
 })
 
-exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
-    const book = req.body
-    const {googleId} = book
-    const profile = await Profile.findOne({user: req.user.id})
 
-    //Check if book has already been added to the users favorites/readLater
-    profile.books.favorites.map(book => {
-        if(book.googleId === googleId) return next(new AppError('This book is already saved to your base.', 500))
-    })
-    profile.books.readLater.map(book => {
-        if(book.googleId === googleId) return next(new AppError('This book is already saved to your base.', 500))
-    })
-
-    profile.books[book.addedTo].push(book)
-    await profile.save()
-    res.json(profile)
-})
-
-exports.deleteBook = catchErrorsAsync(async(req, res, next) => {
-    const book = req.body
-    const type = book.addedTo
-    const profile = await Profile.findOne({user: req.user.id})
-    const removeIndex = profile.books[type].map(book => book._id).indexOf(req.params.book_id)
-    profile.books[type].splice(removeIndex, 1)   
-    await profile.save()
-    res.json(profile)
-})
 
 exports.getMyProfile = catchErrorsAsync(async(req, res, next) => {
+    //Runs as soon as a user logs in
     const profile = await Profile.findOne({
         user: req.user.id
     })
@@ -59,5 +33,35 @@ exports.getMyProfile = catchErrorsAsync(async(req, res, next) => {
     res.status(200).json({
         status: 'success',
         data: profile
+    })
+})
+
+exports.getSearchedProfile = catchErrorsAsync(async(req, res, next) => {
+    //Current user logged in and using application
+    const currentUser = req.user
+
+    //User being searched for
+    const {userName} = req.body
+
+    //Prevent users from searching themselves up
+    if(userName === currentUser.userName) return next(new AppError(`${currentUser.firstName}, you cannot search yourself up..`))
+
+    //Check if the user being searched for exists
+    const user = await User.findOne({userName: userName})
+    if(!user) return next(new AppError('Could not find this user. Double check that the capitalization, spelling, any spaces, and numbers are correct.'))
+    
+    //If user exists then send their profile as a response
+    const userFullName = [user.firstName, user.lastName].toString()
+    const profile = await Profile.findOne({
+        user: user._id
+    }).select('-friendRequests')
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            profile,
+            userFullName,
+            userName
+        }
     })
 })

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import {addBookToDB} from '../../../actions/profile'
+import {addBookToMyBase} from '../../../actions/myBase'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/esm/Col'
 import Form from 'react-bootstrap/Form'
@@ -12,9 +12,10 @@ import {connect} from 'react-redux'
 import  PropTypes from 'prop-types'
 import Spinner from '../Spinner'
 
-function Books({addBookToDB}) {
+function Books({addBookToMyBase}) {
     const [searchInput, setSearchInput] = useState('')
     const [searchResults, setSearchResults] = useState([])
+    const [isDisabled, setIsDisabled] = useState(false)
     const [loading, setLoading] = useState(false)
 
     const onChange = (e) => setSearchInput(e.target.value)
@@ -25,7 +26,6 @@ function Books({addBookToDB}) {
        const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=10&key=${process.env.REACT_APP_BOOK_API_KEY}`)
        const books = data.data['items'].map(book => {
             const {volumeInfo} = book
-            
             book = {
                 googleId: book.id,
                 title: volumeInfo.title,
@@ -40,18 +40,26 @@ function Books({addBookToDB}) {
                 cover: volumeInfo.imageLinks,
                 previewLink: volumeInfo.previewLink
             }
-            console.log(book.authors)
             return book
        })
-       const bookResults = books.filter(book => book.cover !== undefined )
-       setSearchResults(bookResults) 
+       let bookResults = books.filter(book => book.cover !== undefined )
+       bookResults.map(book => book.cover = book.cover.thumbnail)
+       setSearchResults(bookResults)
        setLoading(false)
+    }
+
+    //disable favorite/readLater buttons for 2 seconds(if not user can click fast enough to store a duplicate book in their base.)
+    const disableButtons = () => {
+        setIsDisabled(true)
+        setTimeout(() =>{
+            setIsDisabled(false)
+        }, 1000)
     }
     
     //if book has more than one author render every author on a new line
     const formatAuthors = (arr) => {
         if(arr === undefined) return
-        return arr.length > 1 ? arr.map(author =>(<Card.Title>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
+        return arr.length > 1 ? arr.map((author, i) =>(<Card.Title key={i}>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
     }
 
     //Perform get request to Google Books api 
@@ -64,11 +72,11 @@ function Books({addBookToDB}) {
     //Add books to users profile
     const favorite = (e) => {
         e.preventDefault()
+        disableButtons()
         try {
             const book = searchResults.find(book => book.title === e.target.value)
-            book.cover = book.cover.thumbnail
             book.addedTo = 'favorites'
-            addBookToDB(book)
+            addBookToMyBase(book)
         } catch (error) {
             console.error(error.message)
         }
@@ -76,17 +84,15 @@ function Books({addBookToDB}) {
 
     const readLater = (e) => {
         e.preventDefault()
+        disableButtons()
         try {
             const book = searchResults.find(book => book.title === e.target.value)
-            book.cover = book.cover.thumbnail
             book.addedTo = 'readLater'
-            addBookToDB(book)
+            addBookToMyBase(book)
         } catch (error) {
             console.error(error.message)
         }
     }
-
-    console.log(searchResults)
 
     return (
         <Container>
@@ -108,27 +114,27 @@ function Books({addBookToDB}) {
             <br></br>
             {loading ? <Spinner /> : <CardColumns>
             {searchResults.map(book => {
-                const {thumbnail} = book.cover
                 return <Card
-                key={book.title}
-                border="secondary"
+                border="primary"
                 style={{width: '18rem'}}
                 className='text-center'
+                key={book.googleId}
                 >
                     <Card.Body>
                         <Card.Header>
                             {book.title}
                         </Card.Header>
 
-                           {formatAuthors(book.authors)}
+                        {formatAuthors(book.authors)}
 
                         <Card.Body>
-                            <img src={thumbnail}/>
+                            <img src={book.cover}/>
                             <Row 
                             className="justify-content-md-center"
                             style={{padding: '5px'}}
                             >
                                 <Button 
+                                disabled={isDisabled}
                                 onClick={favorite}
                                 style={{marginRight: '5px'}}
                                 value={book.title}
@@ -136,6 +142,7 @@ function Books({addBookToDB}) {
                                     Favorite
                                 </Button>
                                 <Button
+                                disabled={isDisabled}
                                 onClick={readLater}
                                 value={book.title}
                                 variant="primary">
@@ -156,4 +163,4 @@ Books.propType ={
     addBookToDB: PropTypes.func.isRequired,
 }
 
-export default connect(null, {addBookToDB})(Books)
+export default connect(null, {addBookToMyBase})(Books)

@@ -25,9 +25,9 @@ export const loadUser = () => async dispatch => {
     }
 }
 
-export const signUp = (firstName, lastName, email, password, passwordConfirm) => async dispatch => {
+export const signUp = (userName, firstName, lastName, email, password, passwordConfirm) => async dispatch => {
     try {
-        const body = {firstName, lastName, email, password, passwordConfirm}
+        const body = {userName, firstName, lastName, email, password, passwordConfirm}
         const res = await api.post('/users/signup', body)
         dispatch({
             type: REGISTER_SUCCESS,
@@ -52,7 +52,6 @@ export const login = (email, password) => async dispatch => {
     try {
         const body = {email, password}
         const res = await api.post('/users/login', body )
-
         dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data

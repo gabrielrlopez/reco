@@ -10,7 +10,4 @@ router.get('/auth', authController.isLoggedIn)
 router.get('/logout', authController.logout)
 
 
-
-
-
 module.exports = router
