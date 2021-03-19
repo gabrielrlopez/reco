@@ -2,6 +2,7 @@ const Profile = require('../../models/profileModel')
 const catchErrorsAsync = require('../../utils/catchAsync')
 const AppError = require('../../utils/appError')
 
+//Check if user has added the book to favorites or read later
 exports.checkForDuplicateBooks = catchErrorsAsync(async(req, res, next) => {
     const book = req.body
     const {googleId} = book
@@ -17,6 +18,7 @@ exports.checkForDuplicateBooks = catchErrorsAsync(async(req, res, next) => {
     next()
 })
 
+//Add book to favorites or to read later
 exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
     const book = req.body
     const profile = await Profile.findOne({user: req.user.id})
@@ -25,7 +27,7 @@ exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
     res.json(profile)
 })
 
-
+//delete a book from my base
 exports.deleteBook = catchErrorsAsync(async(req, res, next) => {
     const book = req.body
     const type = book.addedTo

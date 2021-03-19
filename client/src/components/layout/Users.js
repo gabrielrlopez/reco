@@ -13,12 +13,13 @@ const Users = ({profile: {searchedProfile}, sendFriendRequest}) => {
             <h1>No results</h1>
         )
     }
+    
     const {userName} = searchedProfile.data
     const {userFullName} = searchedProfile.data
-    const {_id} = searchedProfile.data.profile
+    const {user} = searchedProfile.data.profile
 
     const sndFriendRequest = () => {
-        sendFriendRequest(_id)
+        sendFriendRequest(user, userName, userFullName)
     } 
 
     return (

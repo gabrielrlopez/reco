@@ -54,7 +54,8 @@ const profileSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.ObjectId,
             ref: 'User',
-            required: [true, 'Book must belong to a user library']
+            userName: String,
+            fullName: String
         },
     ],
     friendRequests: {
@@ -62,14 +63,16 @@ const profileSchema = new mongoose.Schema({
             {
                 type: mongoose.Schema.ObjectId,
                 ref: 'User',
-                required: [true, 'Book must belong to a user library']
+                userName: String,
+                fullName: String
             },
         ],
         sentRequests: [
             {
                 type: mongoose.Schema.ObjectId,
                 ref: 'User',
-                required: [true, 'Book must belong to a user library']
+                userName: String,
+                fullName: String
             },
         ]
     },

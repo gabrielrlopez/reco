@@ -33,7 +33,12 @@ const Navigation = ({getSearchedProfile, logout, profile:{searchedProfile}, auth
         <NavDropdown.Item href="#!">Recipes</NavDropdown.Item>
         <NavDropdown.Item href="#!">Youtube</NavDropdown.Item>
       </NavDropdown>
-      <Nav.Link href="/myRecos">myRecommendations</Nav.Link>
+
+      <NavDropdown title="MyRecommendations" id="basic-nav-dropdown">
+      <NavDropdown.Item href="/myRecos">MyRecos</NavDropdown.Item>
+        <NavDropdown.Item href="/friends">Friends</NavDropdown.Item>
+      </NavDropdown>
+
       <NavDropdown title="Send New Recommendation" id="basic-nav-dropdown">
         <NavDropdown.Item href="/send-new-reco/books">Books</NavDropdown.Item>
         <NavDropdown.Item href="#!">Video Games</NavDropdown.Item>

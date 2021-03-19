@@ -53,7 +53,7 @@ function Books({addBookToMyBase}) {
         setIsDisabled(true)
         setTimeout(() =>{
             setIsDisabled(false)
-        }, 1000)
+        }, 500)
     }
     
     //if book has more than one author render every author on a new line

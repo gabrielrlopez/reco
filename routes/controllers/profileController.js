@@ -20,8 +20,6 @@ exports.createUpdateProfile = catchErrorsAsync(async(req, res, next) => {
     res.json(profile)
 })
 
-
-
 exports.getMyProfile = catchErrorsAsync(async(req, res, next) => {
     //Runs as soon as a user logs in
     const profile = await Profile.findOne({
@@ -64,4 +62,21 @@ exports.getSearchedProfile = catchErrorsAsync(async(req, res, next) => {
             userName
         }
     })
+})
+
+exports.deleteFriend = catchErrorsAsync(async(req, res, next) => {
+    const {friendUserId} = req.body
+
+    //Delete user from current users friends array 
+    currentUserProfile = await Profile.findOneAndUpdate(
+        {user: req.user.id},
+        {$pull: {"friends": friendUserId}}
+    )
+
+    //Delete current user from deleted friend's friends array
+    await Profile.findOneAndUpdate(
+        {user: friendUserId},
+        {$pull: {"friends": req.user.id}}
+    )
+    res.json(currentUserProfile)
 })
