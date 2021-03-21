@@ -4,6 +4,7 @@ import {
     UPDATE_PROFILE,
     PROFILE_ERROR,
     GET_SEARCHED_PROFILE,
+    SEARCHED_FRIENDS
 } from '../actions/types'
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
     searchedProfile: null,
     profiles: [],
     loading: true,
+    searchedFriends: false,
     error: {}
 }
 
@@ -29,6 +31,10 @@ export default function(state = initialState, action){
             return {
                 searchedProfile: payload,
                 loading: false
+            }
+        case SEARCHED_FRIENDS: 
+            return {
+                searchedFriends: payload
             }
         case GET_PROFILES:
             return {

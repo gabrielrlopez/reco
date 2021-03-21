@@ -14,7 +14,7 @@ const Friends = ({getCurrentProfile, acceptFriendRequest, declineFriendRequest, 
         getCurrentProfile()
     }, [])
 
-    const dclRequest = (e) => {
+    const decline = (e) => {
         try {
             e.preventDefault()
             declineFriendRequest(e.target.value)
@@ -23,7 +23,7 @@ const Friends = ({getCurrentProfile, acceptFriendRequest, declineFriendRequest, 
         }
     }
 
-    const accRequest = (e) => {
+    const accept = (e) => {
         try {
             e.preventDefault()
             acceptFriendRequest(e.target.value)
@@ -43,8 +43,8 @@ const Friends = ({getCurrentProfile, acceptFriendRequest, declineFriendRequest, 
                         test
                     </p>
                     <p>
-                      <Button value={request} onClick={accRequest} variant="primary">Accept</Button>
-                      <Button value={request} onClick={dclRequest} variant="danger">Decline</Button>
+                      <Button value={request} onClick={accept} variant="primary">Accept</Button>
+                      <Button value={request} onClick={decline} variant="danger">Decline</Button>
                     </p>
                 </Jumbotron>) : null}
             <h1>Friends</h1>

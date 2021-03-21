@@ -29,4 +29,4 @@ router.post('/requests/accept', authController.protect, friendRequestController.
 //Decline friend requests
 router.post('/requests/decline', authController.protect, friendRequestController.declineFriendRequest)
 
-module.exports = router
+module.exports = router 

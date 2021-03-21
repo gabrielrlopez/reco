@@ -52,7 +52,7 @@ exports.getSearchedProfile = catchErrorsAsync(async(req, res, next) => {
     const userFullName = [user.firstName, user.lastName].toString()
     const profile = await Profile.findOne({
         user: user._id
-    }).select('-friendRequests')
+    })
 
     res.status(200).json({
         status: 'success',

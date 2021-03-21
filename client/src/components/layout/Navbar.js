@@ -2,7 +2,8 @@ import {React, useState} from 'react'
 import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {logout} from '../../actions/auth'
-import {getSearchedProfile} from '../../actions/profile'
+import {getCurrentProfile, getSearchedProfile} from '../../actions/profile'
+import {searchFriends} from '../../actions/friends'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
@@ -10,16 +11,26 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import {Redirect} from 'react-router-dom'
+import Spinner from 'react-bootstrap/esm/Spinner'
 
 
-const Navigation = ({getSearchedProfile, logout, profile:{searchedProfile}, auth: {isAuthenticated, loading}}) => {
+const Navigation = ({
+  getSearchedProfile,
+  searchFriends,
+  logout,
+  profile:{searchedProfile},
+  auth: {isAuthenticated, loading}
+  }) => {
     const [searchInput, setSearchInput] = useState('')
 
     const onChange = (e) => setSearchInput(e.target.value)
 
     const onSubmit = (e) => {
       e.preventDefault()
-      if(searchInput)getSearchedProfile(searchInput)
+      if(searchInput){
+        getSearchedProfile(searchInput)
+      }
+      searchFriends(true)
     }
 
     const authLinks = (
@@ -50,7 +61,7 @@ const Navigation = ({getSearchedProfile, logout, profile:{searchedProfile}, auth
       </NavDropdown>
 
       <Form inline onSubmit={onSubmit}>
-        <FormControl onChange={e => onChange(e)} value={searchInput} type="text" placeholder="Search for friends" className="mr-sm-2" />
+        <FormControl onChange={e => onChange(e)} value={searchInput} type="text" placeholder="Search Friends By Username" className="mr-sm-2" />
         <Button variant="outline-primary" type="submit">Search</Button>
       </Form>
 
@@ -73,7 +84,7 @@ const Navigation = ({getSearchedProfile, logout, profile:{searchedProfile}, auth
                 {!loading && isAuthenticated ? authLinks : guestLinks}
               </Nav>
             </Navbar>
-            {searchedProfile && isAuthenticated ? <Redirect to="/searchFriends" /> : null}
+            {searchedProfile ? <Redirect to="/searchFriends" /> : null}
         </div>
     )
 }
@@ -82,6 +93,7 @@ Navigation.propType = {
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
   getSearchedProfile: PropTypes.func.isRequired,
+  searchFriends: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
 }
 
@@ -90,4 +102,4 @@ const mapStateToProps = state => ({
   profile: state.profile
 })
 
-export default connect(mapStateToProps, {getSearchedProfile, logout})(Navigation)
+export default connect(mapStateToProps, {getSearchedProfile, searchFriends, logout})(Navigation)
