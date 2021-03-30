@@ -6,7 +6,7 @@ import {
 } from './types'
 
 
-export const sendFriendRequest = (receiverUserId, receiverUserName, receiverFullName) => async dispatch => {
+export const sendFriendRequest = (receiverUserId, receiverFullName) => async dispatch => {
     try {
         const profile = {
             receiverUserId
@@ -16,6 +16,7 @@ export const sendFriendRequest = (receiverUserId, receiverUserName, receiverFull
             type: UPDATE_PROFILE,
             payload: res
         })
+        dispatch(setAlert(`Friend request sent to ${receiverFullName}`, 'success', 3000))
     } catch (error) {
         const errors = error.response.data
         if(errors){
@@ -29,28 +30,36 @@ export const sendFriendRequest = (receiverUserId, receiverUserName, receiverFull
     }
 }
 
-export const cancelFriendRequest = () => async dispatch => {
-    try {
-
-    } catch (error) {
-        const errors = error.response.data
-        if(errors){
-            console.log(errors)
-            dispatch(setAlert(errors.message, 'danger', 3000))
-        }
-        dispatch({
-            type: PROFILE_ERROR,
-            payload: error
-        })
-    }
-}
-
-export const acceptFriendRequest = (senderId) => async dispatch => {
+export const cancelFriendRequest = (requestedUserId) => async dispatch => {
     try {
         const profile = {
-            senderId
+            requestedUserId
         }
-        const res = api.post('/profiles/requests/decline', profile)
+        const res = await api.post('/profiles/requests/cancel', profile)
+        dispatch({
+            type: UPDATE_PROFILE,
+            payload: res
+        })
+        dispatch(setAlert(`Friend request canceled.`, 'warning', 3000))
+    } catch (error) {
+        const errors = error.response.data
+        if(errors){
+            console.log(errors)
+            dispatch(setAlert(errors.message, 'danger', 3000))
+        }
+        dispatch({
+            type: PROFILE_ERROR,
+            payload: error
+        })
+    }
+}
+
+export const acceptFriendRequest = (senderUserId) => async dispatch => {
+    try {
+        const profile = {
+            senderUserId
+        }
+        const res = api.post('/profiles/requests/accept', profile)
         dispatch({
             type: UPDATE_PROFILE,
             payload: res
@@ -68,10 +77,12 @@ export const acceptFriendRequest = (senderId) => async dispatch => {
     }
 }
 
-export const declineFriendRequest = (senderId) => async dispatch => {
+export const declineFriendRequest = (senderUserId, senderUserName, senderUserFullName) => async dispatch => {
     try {
         const profile = {
-            senderId
+            senderUserId,
+            senderUserName,
+            senderUserFullName
         }
         const res = api.post('/profiles/requests/decline', profile)
         dispatch({

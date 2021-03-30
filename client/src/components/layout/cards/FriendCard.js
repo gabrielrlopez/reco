@@ -5,18 +5,20 @@ import CardColumns from 'react-bootstrap/CardColumns'
 import Row from 'react-bootstrap/Row'
 import Button from 'react-bootstrap/Button'
 
-const FriendCard = () => {
-    return <Card>
+const FriendCard = ({userName, userFullName}) => {
+    return <Card
+    border="primary"
+    style={{width: '18rem'}}
+    className='text-center'
+    // key={}
+    >
+        <Card.Body>
         <Card.Header>
-            Friend
+            {userName}
         </Card.Header>
         <Card.Body>
-            <CardButton>
-                Accept
-            </CardButton>
-            <CardButton>
-                Decline
-            </CardButton>
+            {userFullName}
+        </Card.Body>
         </Card.Body>
     </Card>
 }

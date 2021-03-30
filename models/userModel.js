@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
@@ -39,8 +40,8 @@ const userSchema = new mongoose.Schema({
         validate: {
             // This only works on save & create NOT update
             validator: 
-                function(el){
-                    return el === this.password
+                function(passConfirm){
+                    return passConfirm === this.password
                 },
                 message: "Oops! Passwords do no match"
         }
@@ -50,9 +51,12 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    photo: String,
-    avatar: {
-        type: String
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
     }
 })
 
@@ -60,6 +64,12 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', function(next){
     this.firstName = this.firstName.toUpperCase()
     this.lastName= this.lastName.toUpperCase()
+    next()
+})
+
+userSchema.pre(/^find/, function(next) {
+    // this keyword points to the current query
+    this.find({active: {$ne: false}})
     next()
 })
 
@@ -85,6 +95,24 @@ userSchema.pre('save', async function(next){
     this.passwordConfirm = undefined
     next()
 })
+
+userSchema.pre('save', async function(next){
+    if(!this.isModified('password') || this.isNew) return next()
+
+    this.passwordChangedAt = Date.now() - 1000
+    next()
+})
+
+userSchema.methods.createPasswordResetToken = function(){
+    const resetToken = crypto.randomBytes(32).toString('hex')
+
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
+    console.log({resetToken}, this.passwordResetToken)
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000
+
+    return resetToken
+}
 
 const User = mongoose.model('User', userSchema)
 module.exports = User

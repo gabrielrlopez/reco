@@ -8,10 +8,12 @@ import Container from 'react-bootstrap/esm/Container'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Button from 'react-bootstrap/Button'
 import { getCurrentProfile } from '../../actions/profile'
+import { Redirect } from 'react-router'
 
 const Users = (
     {profile: {profile, loading, searchedProfile, searchedFriends},
     getCurrentProfile,
+    searchFriends,
     sendFriendRequest,
     cancelFriendRequest,
     acceptFriendRequest,
@@ -27,7 +29,9 @@ const Users = (
     
 
     const currentUserFriends = profile.data.friends
-    const currentUserFriendRequests = profile.data.friendRequests
+    const currentUserFriendsUserNames = profile.data.friends.map(friend => friend.userName)
+    const currentUserFriendRequests = profile.data.friendRequests.requests.map(req => req.userId)
+    const currentUserSentFriendRequests = profile.data.friendRequests.sentRequests
 
     const searchedUserName = searchedProfile.data.userName
     const searchedUserFullName = searchedProfile.data.userFullName
@@ -37,39 +41,55 @@ const Users = (
 
     //On click functions for requests buttons 
     const request = () => {
-        sendFriendRequest()
+        sendFriendRequest(searchedUserId)
+        searchFriends(false)
     }
     const cancelRequest = () => {
-        cancelFriendRequest()
+        cancelFriendRequest(searchedUserId)
+        searchFriends(false)
     }
     const acceptRequest = () => {
-        acceptFriendRequest()
+        acceptFriendRequest(searchedUserId)
+        searchFriends(false)
     }
     const declineRequest = () => {
-        declineFriendRequest()
+        declineFriendRequest(searchedUserId, searchedUserName, searchedUserFullName)
+        searchFriends(false)
     }
 
     //Render buttons based on the friend status between the current user and searched user
     const renderButton = () => {
-        if(currentUserFriendRequests.sentRequests.includes(searchedUserId)) return (
+        if(currentUserSentFriendRequests.includes(searchedUserId)) return (
             <>
-            <Button type="submit" variant="danger">Cancel Request</Button>
+            <Button variant="danger" onClick={cancelRequest}>Cancel Request</Button>
             </>
         )
-        if(currentUserFriendRequests.requests.includes(searchedUserId)) return (
+        if(currentUserFriendRequests.includes(searchedUserId)) return (
             <>
-            <Button type="submit" variant="success">Accept</Button>
-            <Button type="submit" variant="danger">Deny</Button>
+            <Button variant="success" onClick={acceptRequest}>Accept</Button>
+            <Button variant="danger" onClick={declineRequest}>Deny</Button>
             </>
         )
         return(
         <>
-        <Button type="submit" variant="primary" onClick={request}>Request</Button>
+        <Button variant="primary" onClick={request}>Request</Button>
         </>
         )
     }
 
     return (
+        <>
+        {currentUserFriendsUserNames.includes(searchedUserName) ? 
+            <Container>
+                <Jumbotron>
+                    <h1>{searchedUserName}</h1>
+                    <h5>{searchedUserFullName}'s favorites by category</h5>
+                    <h5>{searchedUserFullName}'s friends</h5>
+                </Jumbotron>
+            </Container>
+
+            :
+
         <Container>
             <Jumbotron>
               <h1>{searchedUserName}</h1>
@@ -82,6 +102,8 @@ const Users = (
               </p>
             </Jumbotron>
         </Container>
+        }
+        </>
     )
 }
 

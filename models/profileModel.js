@@ -47,32 +47,34 @@ const profileSchema = new mongoose.Schema({
             wantToPlay: []
         },
     },
+    recommendations: {
+        books: {
+            favorites: [book],
+            readLater: [book]
+        },
+    },
     bio: {
         type: String
     },
     friends: [
         {
-            type: mongoose.Schema.ObjectId,
-            ref: 'User',
+            userId: String,
             userName: String,
-            fullName: String
+            userFullName: String
         },
     ],
     friendRequests: {
         requests: [
             {
-                type: mongoose.Schema.ObjectId,
-                ref: 'User',
+                userId: String,
                 userName: String,
-                fullName: String
+                userFullName: String
             },
         ],
         sentRequests: [
             {
                 type: mongoose.Schema.ObjectId,
                 ref: 'User',
-                userName: String,
-                fullName: String
             },
         ]
     },

@@ -1,65 +1,93 @@
 import {React, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {getCurrentProfile} from '../../../actions/profile'
-import {acceptFriendRequest} from '../../../actions/friendRequests'
-import {declineFriendRequest} from '../../../actions/friendRequests'
+import {acceptFriendRequest, declineFriendRequest} from '../../../actions/friendRequests'
+import {searchFriends} from '../../../actions/friends'
 import PropTypes from 'prop-types'
 import Container from 'react-bootstrap/esm/Container'
 import FriendCard from '../cards/FriendCard'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Button from 'react-bootstrap/Button'
+import Spinner from '../Spinner'
 
-const Friends = ({getCurrentProfile, acceptFriendRequest, declineFriendRequest, profile:{profile}}) => {
+const Friends = ({
+    getCurrentProfile,
+    acceptFriendRequest,
+    declineFriendRequest,
+    searchFriends,
+    profile:{profile, loading, searchedFriends}
+    }) => {
+
     useEffect(() => {
         getCurrentProfile()
-    }, [])
+    }, [searchedFriends])
 
-    const decline = (e) => {
-        try {
-            e.preventDefault()
-            declineFriendRequest(e.target.value)
-        } catch (error) {
-            console.log(error)
-        }
+    if(!profile || loading) return (<Spinner/>)
+
+    const currentUserFriendRequests = profile.data.friendRequests
+    const currentUserFriends = profile.data.friends
+
+
+    const acceptRequest = (e) => {
+        acceptFriendRequest(e.target.value)
+        searchFriends(true)
     }
-
-    const accept = (e) => {
-        try {
-            e.preventDefault()
-            acceptFriendRequest(e.target.value)
-        } catch (error) {
-            console.log(error)
-        }
+    const declineRequest = (e) => {
+        declineFriendRequest(e.target.value)
+        searchFriends(true)
     }
 
     return (
-        <Container>
-            <h1>Friend Requests</h1>
-                {profile ? profile.data.friendRequests.requests.map(request =>
-                <Jumbotron>
-                    <h1>user</h1>
-                    <h5>first, last</h5>
-                    <p>
-                        test
-                    </p>
-                    <p>
-                      <Button value={request} onClick={accept} variant="primary">Accept</Button>
-                      <Button value={request} onClick={decline} variant="danger">Decline</Button>
-                    </p>
-                </Jumbotron>) : null}
-            <h1>Friends</h1>
-        </Container>
+        <>
+
+            {/*Friend Requests*/}
+            {/*Only render request container if current user has friend requests pending*/}
+            {currentUserFriendRequests.requests.length > 0 ? 
+                <Container>
+                    <h1>Friend Requests</h1>
+                        {currentUserFriendRequests.requests.map(request =>
+                        <Jumbotron>
+                            <h1>{request.userName}</h1>
+                            <h5>{request.userFullName}</h5>
+                            <p>
+                              <Button value={request.userId} onClick={acceptRequest} variant="success">Accept</Button>
+                              <Button value={request.userId} onClick={declineRequest} variant="danger">Decline</Button>
+                            </p>
+                        </Jumbotron>)}
+                </Container>
+
+                : null
+            }
+
+            {/*Friends*/}
+
+            <Container>
+                <h1>Friends</h1>
+                {currentUserFriends.map(friend => 
+                    <FriendCard 
+                        userName={friend.userName}
+                        userFullName={friend.userFullName}
+                    />
+                )}
+            </Container>
+        </>
     )
 }
 
 Friends.PropType = {
     getCurrentProfile: PropTypes.func.isRequired,
     acceptFriendRequest: PropTypes.func.isRequired,
-    declineFriendRequest: PropTypes.func.isRequired
+    declineFriendRequest: PropTypes.func.isRequired,
+    searchFriends: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
     profile: state.profile
 })
 
-export default connect(mapStateToProps, {getCurrentProfile, acceptFriendRequest, declineFriendRequest})(Friends)
+export default connect
+    (mapStateToProps,
+    {getCurrentProfile, 
+     acceptFriendRequest,
+     declineFriendRequest,
+     searchFriends})(Friends)

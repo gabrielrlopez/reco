@@ -20,14 +20,18 @@ exports.checkIfAlreadyRequestedOrFriends = catchErrorsAsync(async(req, res, next
 
 exports.sendFriendRequest = catchErrorsAsync(async(req, res, next) => {
     //User that is sending friend request
-    const currentUserId = await User.findById(req.user.id)
-    
+    const currentUser = await User.findById(req.user.id)
+
     //User that will be receiving friend request
     //Pushing friend request into receiving users friend requests array
     const {receiverUserId} = req.body
     await Profile.findOneAndUpdate(
         {user: receiverUserId},
-        {$push: {"friendRequests.requests": currentUserId}}
+        {$push: {"friendRequests.requests": {
+            userId: currentUser._id,
+            userName: currentUser.userName,
+            userFullName: [currentUser.firstName, currentUser.lastName].toString()
+        }}}
     )
 
     //Pushing friend request into current users sent friend requests array
@@ -50,27 +54,37 @@ exports.cancelFriendRequest = catchErrorsAsync(async(req, res, next) => {
     //Delete the friend request from requested user friend requests array
     await Profile.findOneAndUpdate(
         {user: requestedUserId},
-        {$pull: {"friendRequests.requests": req.user.id}}
+        {$pull: {"friendRequests.requests": {userId: req.user.id}}}
     )
-    res.status(200).json(currentUserProfile)
+    res.json(currentUserProfile)
 })
 
 exports.acceptFriendRequest = catchErrorsAsync(async(req, res, next) => {
     const {senderUserId} = req.body
+    const senderUserProfile = await User.findById(senderUserId)
     
     //Delete friend request from current users requests array then push the requester into current users friends array
     const currentUserProfile = await Profile.findOneAndUpdate(
         {user: req.user.id},
-        {$pull: {"friendRequests.requests": senderUserId},
-         $push: {"friends": senderUserId}
+        {$pull: {"friendRequests.requests": {userId: senderUserId}},
+         $push: {"friends": {
+            userId: senderUserProfile._id,
+            userName: senderUserProfile.userName,
+            userFullName: [senderUserProfile.firstName, senderUserProfile.lastName].toString()
+         }}
         }
     )
 
     //Delete the sent request from requesters sent requests array and push the requested user into the requestors friends array
+    const currentUser = await User.findById(req.user.id)
     await Profile.findOneAndUpdate(
         {user: senderUserId},
         {$pull: {"friendRequests.sentRequests": req.user.id},
-         $push: {"friends": req.user.id}
+         $push: {"friends": {
+            userId: currentUser._id,
+            userName: currentUser.userName,
+            userFullName: [currentUser.firstName, currentUser.lastName].toString()
+         }}
         }
     )
     res.json(currentUserProfile)
@@ -82,7 +96,7 @@ exports.declineFriendRequest = catchErrorsAsync(async(req, res, next) => {
     //Delete request from current users requests array
     const currentUserProfile = await Profile.findOneAndUpdate(
         {user: req.user.id},
-        {$pull: {"friendRequests.requests": senderUserId}}
+        {$pull: {"friendRequests.requests": {userId: senderUserId}}}
     )
 
     //Delete sent request from the user's sent request array that sent the request

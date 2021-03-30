@@ -34,6 +34,6 @@ exports.deleteBook = catchErrorsAsync(async(req, res, next) => {
     const profile = await Profile.findOne({user: req.user.id})
     const removeIndex = profile.userBase.books[type].map(book => book._id).indexOf(req.params.book_id)
     profile.userBase.books[type].splice(removeIndex, 1)   
-    await profile.save()
+    await profile.save() 
     res.json(profile)
 })

@@ -31,6 +31,7 @@ const Navigation = ({
         getSearchedProfile(searchInput)
       }
       searchFriends(true)
+      setSearchInput('')
     }
 
     const authLinks = (

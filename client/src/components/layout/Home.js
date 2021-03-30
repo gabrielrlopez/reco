@@ -5,16 +5,22 @@ import  {getCurrentProfile} from '../../actions/profile'
 import  {loadUser} from '../../actions/auth'
 import  PropTypes from 'prop-types'
 import Container from 'react-bootstrap/esm/Container'
-function Home({getCurrentProfile, profile: {profile, loading}}) {
+function Home(
+    {getCurrentProfile,
+     auth: {user},
+     profile: {profile, loading}
+    }){
     useEffect(() => {
         getCurrentProfile()
     }, [])
 
-    return <Container>
-        {loading && profile === null ? <Spinner /> : 
-        <Fragment>Welcome back 
-            <h1></h1>
-        </Fragment>}
+    if(!user || loading) return <Spinner /> 
+    if(!profile || loading) return <Spinner /> 
+
+    return <Container> 
+        <h1>
+         Hi, {user.firstName}
+        </h1>
     </Container> 
 }
 
