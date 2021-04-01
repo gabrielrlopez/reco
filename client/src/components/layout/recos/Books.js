@@ -1,23 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {addBookToMyBase} from '../../../actions/myBase'
-import Button from 'react-bootstrap/Button'
-import Col from 'react-bootstrap/esm/Col'
+import {sendNewReco} from '../../../actions/reco'
 import Form from 'react-bootstrap/Form'
 import axios from 'axios'
-import Card from 'react-bootstrap/Card'
-import CardColumns from 'react-bootstrap/CardColumns'
-import Container from 'react-bootstrap/esm/Container'
-import Row from 'react-bootstrap/Row'
 import {connect} from 'react-redux'
 import  PropTypes from 'prop-types'
 import Spinner from '../Spinner'
 
-function Books({addBookToMyBase}) {
+import Button from 'react-bootstrap/Button'
+import Col from 'react-bootstrap/esm/Col'
+import Card from 'react-bootstrap/Card'
+import CardColumns from 'react-bootstrap/CardColumns'
+import Container from 'react-bootstrap/esm/Container'
+import Row from 'react-bootstrap/Row'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
+import PopoverContent from 'react-bootstrap/PopoverContent'
+import PopoverTitle from 'react-bootstrap/PopoverTitle'
+import ListGroup from 'react-bootstrap/ListGroup'
+
+
+const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
+    
     const [searchInput, setSearchInput] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [isDisabled, setIsDisabled] = useState(false)
     const [loading, setLoading] = useState(false)
-
+    const [bookReco, setBookReco] = useState({})
+    
     const onChange = (e) => setSearchInput(e.target.value)
 
     const searchGoogleBooks = async (input) => {
@@ -48,7 +58,7 @@ function Books({addBookToMyBase}) {
        setLoading(false)
     }
 
-    //disable favorite/readLater buttons for 2 seconds(if not user can click fast enough to store a duplicate book in their base.)
+    //disable favorite/readLater buttons for .5 seconds(if not user can click fast enough to store a duplicate book in their base.)
     const disableButtons = () => {
         setIsDisabled(true)
         setTimeout(() =>{
@@ -93,6 +103,49 @@ function Books({addBookToMyBase}) {
             console.error(error.message)
         }
     }
+
+    //Reco functionality
+
+    //Store the book to bookReco state when user clicks on the "Reco a friend" button
+    const storeBookToState = (e) => {
+        e.preventDefault()
+        const book = searchResults.find(book => book.title === e.target.value)
+        setBookReco(book)
+    }
+
+    //Send the recommendation 
+    const sendNewRecommendation = (e) => {
+        e.preventDefault()
+        try {
+            const friendId = e.target.value
+            sendNewReco(friendId, bookReco)            
+        } catch (error) {
+            console.error(error.message)
+        }
+    }
+
+    //Popover
+    const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Select A Friend To Reco This Book</Popover.Title>
+          <Popover.Content>
+            <ListGroup variant="flush">
+                {!profile ? <Spinner /> : profile.data.friends.map((friend, i) => 
+                    <ListGroup.Item
+                     action 
+                     key={i}
+                     value={friend.userId}
+                     onClick={sendNewRecommendation}
+                    >
+                    {friend.userFullName}
+                    </ListGroup.Item> 
+                )}
+            </ListGroup>
+          </Popover.Content>
+        </Popover>
+    )
+
+
 
     return (
         <Container>
@@ -149,7 +202,17 @@ function Books({addBookToMyBase}) {
                                     Read later
                                 </Button>
                             </Row>
-                            <Button variant="danger">Reco a friend</Button>
+                            
+                            <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                                <Button 
+                                    variant="danger"
+                                    value={book.title}
+                                    onClick={storeBookToState}
+                                >
+                                Reco a friend
+                                </Button>
+                            </OverlayTrigger>
+
                         </Card.Body>
                     </Card.Body>    
                 </Card>
@@ -160,7 +223,15 @@ function Books({addBookToMyBase}) {
 }
 
 Books.propType ={
-    addBookToDB: PropTypes.func.isRequired,
+    addBookToMyBase: PropTypes.func.isRequired,
+    sendNewReco: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired,
+    profile:  PropTypes.object.isRequired
 }
 
-export default connect(null, {addBookToMyBase})(Books)
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+    profile: state.profile
+})
+
+export default connect(mapStateToProps, {addBookToMyBase, sendNewReco})(Books)

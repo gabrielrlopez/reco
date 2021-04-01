@@ -1,4 +1,4 @@
-import React, {useEffect, Fragment} from 'react'
+import React, {useEffect} from 'react'
 import BookCard from '../cards/BookCard'
 import Spinner from '../Spinner'
 import {connect} from 'react-redux'
@@ -8,13 +8,9 @@ import  PropTypes from 'prop-types'
 import '../styles/MyBooks.css'
 
 
-const MyBooks = ({getCurrentProfile, deleteBookFromMyBase, profile: {profile, loading}}) => {
-    useEffect(() => {
-        getCurrentProfile()
-    }, [])
+const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
 
-    
-    return  <Fragment>
+    return  <>
             <h1>MyBase</h1>
             <h2>Favorites</h2>
             {profile ? 
@@ -59,11 +55,10 @@ const MyBooks = ({getCurrentProfile, deleteBookFromMyBase, profile: {profile, lo
                 :
                 null
             }
-            </Fragment>
+            </>
 }
 
 MyBooks.propTypes = {
-    getCurrentProfile: PropTypes.func.isRequired,
     deleteBookFromMyBase: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     profile:  PropTypes.object.isRequired
@@ -74,4 +69,4 @@ const mapStateToProps = (state) => ({
     profile: state.profile
 })
 
-export default connect(mapStateToProps, {getCurrentProfile, deleteBookFromMyBase})(MyBooks)
+export default connect(mapStateToProps, {deleteBookFromMyBase})(MyBooks)

@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const authController = require('../controllers/authController')
 const profileController = require('../controllers/profileController')
+const recoController = require('../controllers/recoController')
 const friendRequestController = require('../controllers/friendRequestController')
 
 //Create profile on sign up, and get users profile on log in
@@ -17,6 +18,9 @@ router.post('/search',
 
 //Delete a friend
 router.post('/friends/delete', authController.protect, profileController.deleteFriend)
+
+//Send a new recommendation 
+router.post('/sendReco', authController.protect, recoController.sendNewReco)
 
 //Send and receive friend requests
 router.post('/requests', authController.protect,

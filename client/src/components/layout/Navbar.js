@@ -36,29 +36,85 @@ const Navigation = ({
 
     const authLinks = (
       <>
+      
       <NavDropdown title="myBase" id="basic-nav-dropdown">
+
         <NavDropdown.Item href="/myBase/books">Books</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Video Games</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Movies</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Netflix Movies</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Food</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Recipes</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Youtube</NavDropdown.Item>
+
       </NavDropdown>
 
       <NavDropdown title="MyRecommendations" id="basic-nav-dropdown">
-      <NavDropdown.Item href="/myRecos">MyRecos</NavDropdown.Item>
+
+        <NavDropdown.Item href="/myRecos">MyRecos</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+        
         <NavDropdown.Item href="/friends">Friends</NavDropdown.Item>
+        
       </NavDropdown>
 
       <NavDropdown title="Send New Recommendation" id="basic-nav-dropdown">
+
         <NavDropdown.Item href="/send-new-reco/books">Books</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Video Games</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Movies</NavDropdown.Item>
+        
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Netflix Movies</NavDropdown.Item>
+        
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Food</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Recipes</NavDropdown.Item>
+        
+            <NavDropdown.Divider />
+
         <NavDropdown.Item href="#!">Youtube</NavDropdown.Item>
+
+      </NavDropdown>
+
+      <NavDropdown title="Manage Account" id="basic-nav-dropdown">
+
+        <NavDropdown.Item href="/myAccount">My Account</NavDropdown.Item>
+
+            <NavDropdown.Divider />
+
+        <NavDropdown.Item href="#!" onClick={logout}>Logout</NavDropdown.Item>
+
       </NavDropdown>
 
       <Form inline onSubmit={onSubmit}>
@@ -66,7 +122,6 @@ const Navigation = ({
         <Button variant="outline-primary" type="submit">Search</Button>
       </Form>
 
-      <Nav.Link href="#!" onClick={logout}>Logout</Nav.Link>
       </>
     )
 

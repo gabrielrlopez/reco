@@ -2,8 +2,10 @@ import { useEffect } from 'react'
 import { BrowserRouter, Route, Switch} from "react-router-dom"
 import PrivateRoute from './components/routing/PrivateRoute'
 import {loadUser} from './actions/auth'
+import {getCurrentProfile} from './actions/profile'
 import Register from './components/auth/Register'
 import Login from './components/auth/Login'
+import MyAccount from './components/layout/MyAccount'
 import Navbar from './components/layout/Navbar'
 import Alert from './components/layout/Alert'
 import Home from './components/layout/Home'
@@ -23,6 +25,7 @@ import store from './store'
 const App = () => {
     useEffect(() => {
         store.dispatch(loadUser())
+        store.dispatch(getCurrentProfile())
     }, [])
     
     return (
@@ -34,6 +37,7 @@ const App = () => {
                   <Route exact path='/' component={Landing}/>
                   <Route exact path='/register' component={Register}/>
                   <Route exact path='/login' component={Login}/>
+                  <PrivateRoute exact path='/myAccount' component={MyAccount}/>
                   <PrivateRoute exact path='/home' component={Home}/>
                   <PrivateRoute exact path='/myBase/books' component={MyBooks}/>
                   <PrivateRoute exact path='/myRecos' component={MyRecos} />

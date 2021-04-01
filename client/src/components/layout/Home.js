@@ -6,16 +6,13 @@ import  {loadUser} from '../../actions/auth'
 import  PropTypes from 'prop-types'
 import Container from 'react-bootstrap/esm/Container'
 function Home(
-    {getCurrentProfile,
+    {
      auth: {user},
-     profile: {profile, loading}
+     profile: {profile}
     }){
-    useEffect(() => {
-        getCurrentProfile()
-    }, [])
 
-    if(!user || loading) return <Spinner /> 
-    if(!profile || loading) return <Spinner /> 
+    if(!user) return <Spinner /> 
+    if(!profile) return <Spinner /> 
 
     return <Container> 
         <h1>
@@ -25,7 +22,6 @@ function Home(
 }
 
 Home.propTypes = {
-    getCurrentProfile: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
     profile:  PropTypes.object.isRequired
 }
@@ -35,4 +31,4 @@ const mapStateToProps = (state) => ({
     profile: state.profile
 })
 
-export default connect(mapStateToProps, {getCurrentProfile})(Home)
+export default connect(mapStateToProps, null)(Home)

@@ -1,6 +1,6 @@
 import api from '../utils/api'
 import {setAlert} from './alert'
-import {createUpdateProfile} from './profile'
+import {createUpdateProfile, getCurrentProfile} from './profile'
 import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
@@ -57,6 +57,7 @@ export const login = (email, password) => async dispatch => {
             payload: res.data
         })
         dispatch(loadUser())
+        dispatch(getCurrentProfile())
         dispatch(setAlert('Log in successful', 'success', 1500))
     } catch (error) {
         const errors = error.response.data

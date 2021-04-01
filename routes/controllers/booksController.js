@@ -24,7 +24,10 @@ exports.addBookToDB = catchErrorsAsync(async(req, res, next) => {
     const profile = await Profile.findOne({user: req.user.id})
     profile.userBase.books[book.addedTo].push(book)
     await profile.save()
-    res.json(profile)
+    res.status(200).json({
+        status: 'success',
+        data: profile
+    })
 })
 
 //delete a book from my base

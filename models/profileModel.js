@@ -47,11 +47,19 @@ const profileSchema = new mongoose.Schema({
             wantToPlay: []
         },
     },
-    recommendations: {
-        books: {
-            favorites: [book],
-            readLater: [book]
-        },
+    recommendations: { 
+        books: [
+            {
+                userId: String,
+                userName: String,
+                userFullName: String,
+                reco: book,
+                date: {
+                    type: Date,
+                    default: Date.now
+                }
+            }
+        ]
     },
     bio: {
         type: String
