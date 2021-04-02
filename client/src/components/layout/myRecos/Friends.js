@@ -9,6 +9,7 @@ import FriendCard from '../cards/FriendCard'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Button from 'react-bootstrap/Button'
 import Spinner from '../Spinner'
+import NoFriends from '../notfound/NoFriends'
 
 const Friends = ({
     getCurrentProfile,
@@ -61,15 +62,19 @@ const Friends = ({
 
             {/*Friends*/}
 
-            <Container>
+                {currentUserFriends.length === 0 ? <NoFriends /> : 
+                <>
+                <Container>
                 <h1>Friends</h1>
                 {currentUserFriends.map(friend => 
                     <FriendCard 
                         userName={friend.userName}
                         userFullName={friend.userFullName}
-                    />
-                )}
-            </Container>
+                    />)
+                }
+                </Container>
+                </>
+                }
         </>
     )
 }

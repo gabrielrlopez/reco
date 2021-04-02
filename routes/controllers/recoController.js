@@ -4,6 +4,7 @@ const catchErrorsAsync = require('../../utils/catchAsync')
 const AppError = require('../../utils/appError')
 
 exports.sendNewReco = catchErrorsAsync(async(req, res, next) => {
+        console.log(req.body.book)
         //1) Check if current user is friends with the user they are trying to send the reco to 
         const currentUser = await User.findById(req.user.id)
         const currentUserProfile = await Profile.findOne({user: req.user.id})

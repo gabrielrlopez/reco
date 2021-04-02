@@ -1,8 +1,8 @@
 import React from 'react'
 import Card from 'react-bootstrap/Card'
 import CardButton from './CardButton'
-import CardColumns from 'react-bootstrap/CardColumns'
 import Row from 'react-bootstrap/Row'
+import '../styles/BookCard.css'
 
 const BookCard = (
     {
@@ -43,18 +43,26 @@ const BookCard = (
             {formatAuthors(authors)}
             <Card.Body>
                 <img src={cover}/>
-                <CardButton
-                    onClickFunction={onClickFunction}
-                    book={book}
-                    caption={caption}
-                    variant={variant}
-                />
-                <CardButton
-                    onClickFunction={onClickFunction2}
-                    book={book2}
-                    caption={caption2}
-                    variant={variant2}
-                />
+                
+                <Row
+                    className="justify-content-md-center"
+                    style={{padding: '5px'}}
+                >
+                    <CardButton
+                        onClickFunction={onClickFunction}
+                        book={book}
+                        caption={caption}
+                        variant={variant}
+                        style={{marginRight: '5px'}}
+                    />
+                    <CardButton
+                        onClickFunction={onClickFunction2}
+                        book={book2}
+                        caption={caption2}
+                        variant={variant2}
+                    />
+                </Row>
+
             </Card.Body>
         </Card.Body>    
     </Card> 

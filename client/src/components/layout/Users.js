@@ -41,7 +41,7 @@ const Users = (
 
     //On click functions for requests buttons 
     const request = () => {
-        sendFriendRequest(searchedUserId)
+        sendFriendRequest(searchedUserId, searchedUserFullName)
         searchFriends(false)
     }
     const cancelRequest = () => {

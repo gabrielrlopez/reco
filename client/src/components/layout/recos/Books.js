@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import {addBookToMyBase} from '../../../actions/myBase'
 import {sendNewReco} from '../../../actions/reco'
-import Form from 'react-bootstrap/Form'
 import axios from 'axios'
 import {connect} from 'react-redux'
 import  PropTypes from 'prop-types'
 import Spinner from '../Spinner'
 
+//Bootstrap
+import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/esm/Col'
 import Card from 'react-bootstrap/Card'
@@ -150,7 +151,7 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
     return (
         <Container>
             <h1>Recommend a book to a friend, or add it to your library of favorites.</h1>
-            <h2>Haven't read it? Add it to your "read it later" library!</h2>
+            <h2>Haven't read it? Add it to your "Read Later" library!</h2>
             <br></br>
             <Form onSubmit={onSubmit}>
                 <Form.Row className="align-items-center">

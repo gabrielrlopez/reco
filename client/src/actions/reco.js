@@ -19,12 +19,11 @@ export const sendNewReco = (userId, book) => async dispatch => {
         })
         dispatch(setAlert('Sent book recommendation!', 'success', 3000))
     } catch (error) {
-        console.log(error)
-        // const errors = error.response.data
-        // if(errors){
-        //     console.log(errors)
-        //     dispatch(setAlert(errors.message, 'danger', 3000))
-        // }
+        const errors = error.response.data
+        if(errors){
+            console.log(errors)
+            dispatch(setAlert(errors.message, 'danger', 3000))
+        }
         dispatch({
             type: PROFILE_ERROR,
             payload: error
