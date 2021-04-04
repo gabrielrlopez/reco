@@ -77,4 +77,56 @@ export const logout = () => async dispatch => {
     dispatch({
         type: {LOGOUT}
     })
-} 
+}
+
+export const updateUserInfo = (email, firstName, lastName) => async dispatch => {
+    try {
+
+        const data = {
+            email,
+            firstName,
+            lastName  
+        }
+
+        const res = await api.patch('/users/updateMyAccount', data)
+
+        dispatch({
+            type: USER_LOADED,
+            payload: res.data
+        })
+
+    } catch (error) {
+        const errors = error.response.data
+        if(errors){
+            console.log(errors)
+            dispatch(setAlert(errors.message, 'danger', 3000))
+        }
+    }
+}
+
+export const updatePassword = (currentPassword, newPassword, confirmPassword) => async dispatch => {
+    try {
+
+        const data = {
+            currentPassword,
+            newPassword,
+            confirmPassword
+        }
+
+        const res = await api.post('/users/updateMyPassword', data)
+
+        dispatch(setAlert('Your password has been successfully updated!', 'success', 1500))
+
+        dispatch({
+            type: USER_LOADED,
+            payload: res.data
+        })
+
+    } catch (error) {
+        const errors = error.response.data
+        if(errors){
+            console.log(errors)
+            dispatch(setAlert(errors.message, 'danger', 3000))
+        }
+    }
+}

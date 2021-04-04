@@ -57,7 +57,10 @@ const profileSchema = new mongoose.Schema({
                 date: {
                     type: Date,
                     default: Date.now
-                }
+                },
+                seen: false,
+                thumbsUp: false,
+                thumbsDown: false
             }
         ]
     },

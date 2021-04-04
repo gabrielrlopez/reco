@@ -1,12 +1,12 @@
 import {React, useState} from 'react'
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
 import  PropTypes from 'prop-types'
 import {login} from '../../actions/auth'
+
 import Container from 'react-bootstrap/esm/Container'
- 
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 
 function Login({login, isAuthenticated}) {
     const [formData, setFormData] = useState({
@@ -31,6 +31,7 @@ function Login({login, isAuthenticated}) {
 
     return (
           <Container>
+            <div className="form-container">
             <h1>Login</h1>
             <Form onSubmit={onSubmit}>
               <Form.Group>
@@ -49,9 +50,10 @@ function Login({login, isAuthenticated}) {
                 <Form.Check type="checkbox" label="Remember me" />
               </Form.Group>
               <Button variant="outline-info" type="submit">
-                Submit
+                Log In
               </Button>
             </Form>
+            </div>
           </Container>
     )
 }

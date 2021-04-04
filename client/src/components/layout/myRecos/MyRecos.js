@@ -4,11 +4,13 @@ import BookCard from '../cards/BookCard'
 import  PropTypes from 'prop-types'
 import Spinner from '../Spinner'
 import dateformat from 'dateformat'
-import '../styles/MyStyles.css'
+import '../styles/MyRecos.css'
 import NoRecos from '../notfound/NoRecos'
 
 import Jumbotron from 'react-bootstrap/esm/Jumbotron'
 import Container from 'react-bootstrap/esm/Container'
+import Button from 'react-bootstrap/Button'
+import {HandThumbsUp, HandThumbsDown} from 'react-bootstrap-icons'
 
 const MyRecos = ({profile: {profile, loading}}) => {
 
@@ -52,6 +54,11 @@ const MyRecos = ({profile: {profile, loading}}) => {
 
                                     <h3><a href={book.reco.previewLink}>Book Preview</a></h3>
 
+                                    <br></br>
+                                    
+                                    <HandThumbsUp className="thumbsUp" size={25}/>
+                                    <HandThumbsDown className="thumbsDown" size={25} style={{margin: "10px"}}/>
+                                    <Button>Mark As Seen</Button>
                                 </div>
                                 <BookCard
                                     key={book.reco.googleId}

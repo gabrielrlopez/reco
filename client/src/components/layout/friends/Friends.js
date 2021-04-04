@@ -4,12 +4,14 @@ import {getCurrentProfile} from '../../../actions/profile'
 import {acceptFriendRequest, declineFriendRequest} from '../../../actions/friendRequests'
 import {searchFriends} from '../../../actions/friends'
 import PropTypes from 'prop-types'
+import NoFriends from '../notfound/NoFriends'
+
 import Container from 'react-bootstrap/esm/Container'
-import FriendCard from '../cards/FriendCard'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Button from 'react-bootstrap/Button'
 import Spinner from '../Spinner'
-import NoFriends from '../notfound/NoFriends'
+import FriendList from './FriendList'
+
 
 const Friends = ({
     getCurrentProfile,
@@ -43,6 +45,7 @@ const Friends = ({
 
             {/*Friend Requests*/}
             {/*Only render request container if current user has friend requests pending*/}
+
             {currentUserFriendRequests.requests.length > 0 ? 
                 <Container>
                     <h1>Friend Requests</h1>
@@ -66,12 +69,9 @@ const Friends = ({
                 <>
                 <Container>
                 <h1>Friends</h1>
-                {currentUserFriends.map(friend => 
-                    <FriendCard 
-                        userName={friend.userName}
-                        userFullName={friend.userFullName}
-                    />)
-                }
+                <FriendList
+                    friends={currentUserFriends}
+                />
                 </Container>
                 </>
                 }

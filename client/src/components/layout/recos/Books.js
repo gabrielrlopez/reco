@@ -34,7 +34,7 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
     const searchGoogleBooks = async (input) => {
        setLoading(true)
        if(!input) return (setLoading(false))
-       const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=10&key=${process.env.REACT_APP_BOOK_API_KEY}`)
+       const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=40&key=${process.env.REACT_APP_BOOK_API_KEY}`)
        const books = data.data['items'].map(book => {
             const {volumeInfo} = book
             book = {

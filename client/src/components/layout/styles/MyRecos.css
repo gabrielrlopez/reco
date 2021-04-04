@@ -1,0 +1,13 @@
+.name-date {
+  display: flex;
+}
+
+.book-section {
+  display: flex;
+}
+
+.thumbsDown:hover,
+.thumbsUp:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}

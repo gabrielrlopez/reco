@@ -189,6 +189,7 @@ exports.resetPassword = catchErrorsAsync(async(req, res, next) => {
 
 
 exports.updatePassword = catchErrorsAsync(async(req, res, next) => {
+    console.log(req.body)
     //1) Get user from collection 
     const user = await User.findById(req.user.id).select('+password')
     //2) Check if the posted password is correct
@@ -196,8 +197,8 @@ exports.updatePassword = catchErrorsAsync(async(req, res, next) => {
         return next(new AppError('The password you entered is not correct. To change your password you must first validate your current password. If you forgot your password please log out and follow the \'Forgot password prompt.\' '))  
     }
     //3) Update password    
-    user.password = req.body.password
-    user.passwordConfirm = req.body.passwordConfirm
+    user.password = req.body.newPassword
+    user.passwordConfirm = req.body.confirmPassword
     await user.save()
     //4) Log user in, send jwt
     createSendToken(user, 200, res)

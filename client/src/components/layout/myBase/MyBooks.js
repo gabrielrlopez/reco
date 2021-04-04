@@ -13,33 +13,50 @@ import Container from 'react-bootstrap/esm/Container'
 
 const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
 
-    if(!profile || loading) return (<Spinner/>)
+    if(!profile || loading) return (<Spinner/>) 
 
     const favoriteBooks = profile.data.userBase.books.favorites
     const readLaterBooks = profile.data.userBase.books.readLater
+    let carouselItems = []
+
+    const generateCarouselItem = (favoriteBooksArr, BookCards) => {
+        let numberOfSlidesToRender
+        const booksPerSlide = 6
+    
+        if(!favoriteBooksArr.length > booksPerSlide) return (<Carousel.Item  data-interval="false">{BookCards}</Carousel.Item>)
+
+        numberOfSlidesToRender = Math.ceil(favoriteBooks.length / booksPerSlide)
+
+        for(let i = 1; i <= numberOfSlidesToRender; i++){
+            let newBookArr = BookCards.splice(0, booksPerSlide)
+            console.log(newBookArr)
+            carouselItems.push(<Carousel.Item data-interval="false">{newBookArr}</Carousel.Item>)
+        }
+        return carouselItems.map(item => item)
+    }
+
+        generateCarouselItem(favoriteBooks, favoriteBooks.map(book =>
+        <BookCard
+            key={book.googleId}
+            title={book.title}
+            authors={book.authors}
+            cover={book.cover}
+            book={book}
+            onClickFunction={deleteBookFromMyBase}
+            caption={'Remove'}
+            variant={'warning'}
+            caption2={'Reco A Friend'}
+            variant2={'danger'}
+        />
+        ))
 
     return  <>
             
             {favoriteBooks.length === 0 && readLaterBooks.length === 0 ? <NoBooks /> : 
                 <>
                     <h2>Favorites</h2>
-                            <Carousel>
-                                <Carousel.Item className="carousel" data-interval="false">
-                                {favoriteBooks.map(book =>
-                                    <BookCard
-                                        key={book.googleId}
-                                        title={book.title}
-                                        authors={book.authors}
-                                        cover={book.cover}
-                                        book={book}
-                                        onClickFunction={deleteBookFromMyBase}
-                                        caption={'Remove'}
-                                        variant={'warning'}
-                                        caption2={'Reco A Friend'}
-                                        variant2={'danger'}
-                                    />
-                                    )}
-                                </Carousel.Item>
+                            <Carousel interval={null}>
+                                {carouselItems}
                             </Carousel>
 
                     <h2>Read Later</h2>
@@ -61,7 +78,7 @@ const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
                 </>
             }
 
-            </>
+        </>
 }
 
 MyBooks.propTypes = {

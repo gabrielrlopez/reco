@@ -1,0 +1,9 @@
+.form-container {
+  max-width: 500px;
+  margin-top: 20px;
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}

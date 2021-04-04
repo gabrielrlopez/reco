@@ -32,6 +32,7 @@ function Register({signUp, isAuthenticated}) {
 
     return (
           <Container>
+            <div className="form-container">
             <h1>Sign Up</h1>
             <Form onSubmit={e => onSubmit(e)}>
 
@@ -74,6 +75,7 @@ function Register({signUp, isAuthenticated}) {
               </Button>
 
             </Form>
+            </div>
           </Container>
     )
 }
