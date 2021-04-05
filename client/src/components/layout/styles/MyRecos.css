@@ -1,9 +1,11 @@
 .name-date {
   display: flex;
+  justify-content: space-evenly;
 }
 
 .book-section {
   display: flex;
+  justify-content: space-evenly;
 }
 
 .thumbsDown:hover,

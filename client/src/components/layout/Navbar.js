@@ -13,6 +13,8 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import {Redirect} from 'react-router-dom'
 import Badge from 'react-bootstrap/Badge'
+import Container from 'react-bootstrap/esm/Container'
+
 
 
 const Navigation = ({
@@ -39,9 +41,6 @@ const Navigation = ({
 
     const authLinks = (
       <>
-
-      {profile ? <Nav.Link href="/myRecos">Recos{profile.data.recommendations.books.length > 0 ? <Badge variant="danger">{profile.data.recommendations.books.length}</Badge> : null}</Nav.Link> : 
-      <Nav.Link href="/myRecos">Recos</Nav.Link>}
 
       {/************************************My Base*************************************/}
 
@@ -107,30 +106,38 @@ const Navigation = ({
 
       </NavDropdown>
 
-      {/*************************************Manage Account************************************/}
+      {/*************************************My Recos*************************************/}
 
-      <NavDropdown title="Manage Account" id="basic-nav-dropdown">
-        
-        <NavDropdown.Item href="/friends">Friends</NavDropdown.Item>
+      {profile ? <Nav.Link href="/myRecos"> My Recos{profile.data.recommendations.books.length > 0 ? <Badge variant="danger">{profile.data.recommendations.books.length}</Badge> : null}</Nav.Link> : 
+      <Nav.Link href="/myRecos">Recos</Nav.Link>}
 
-            <NavDropdown.Divider />
-
-        <NavDropdown.Item href="/myAccount">My Account</NavDropdown.Item>
-
-            <NavDropdown.Divider />
-
-        <NavDropdown.Item href="#!" onClick={logout}>Logout</NavDropdown.Item>
-
-      </NavDropdown>
-
-      {/************************************Search bar*************************************/}
-
-      <Form inline onSubmit={onSubmit}>
-        <FormControl onChange={e => onChange(e)} value={searchInput} type="text" placeholder="Search Friends By Username" className="mr-sm-2" />
-        <Button variant="outline-primary" type="submit">Search</Button>
-      </Form>
-
+    
       </>
+    )
+
+    {/************************************Search bar*************************************/}
+    const searchBar = (
+      <>
+      {/*************************************Manage Account************************************/}
+          <NavDropdown title="Manage Account" id="basic-nav-dropdown">
+
+              <NavDropdown.Item href="/friends">Friends</NavDropdown.Item>
+            
+                  <NavDropdown.Divider />
+            
+              <NavDropdown.Item href="/myAccount">My Account</NavDropdown.Item>
+            
+                  <NavDropdown.Divider />
+            
+              <NavDropdown.Item href="#!" onClick={logout}>Logout</NavDropdown.Item>
+
+          </NavDropdown>
+
+          <Form inline onSubmit={onSubmit}>
+            <FormControl onChange={e => onChange(e)} value={searchInput} type="text" placeholder="Search Friends By Username" className="mr-sm-2" />
+            <Button variant="outline-primary" type="submit">Search</Button>
+          </Form>
+          </>
     )
 
     {/************************************Not authenticated render*************************************/}
@@ -143,15 +150,18 @@ const Navigation = ({
     )
 
     return (
-        <div>
-            <Navbar bg="light" variant="light">
+          <>
+            <Navbar bg="light" variant="light" expand="lg">
+              <Container>
               <Navbar.Brand href="/">Reco</Navbar.Brand>
               <Nav className="mr-auto">
-                {!loading && isAuthenticated ? authLinks : guestLinks}
+                {!loading && isAuthenticated ? authLinks : null}
               </Nav>
+                {!loading && isAuthenticated ? searchBar : guestLinks}
+              </Container>
             </Navbar>
             {searchedProfile ? <Redirect to="/searchFriends" /> : null}
-        </div>
+          </>
     )
 }
 

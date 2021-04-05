@@ -30,20 +30,15 @@ function Login({login, isAuthenticated}) {
 
 
     return (
-          <Container>
-            <div className="form-container">
+            <Container>
+            <div className="form-container" style={{margin: "0 auto"}}>
             <h1>Login</h1>
             <Form onSubmit={onSubmit}>
               <Form.Group>
-                <Form.Label>Email address</Form.Label>
-                <Form.Control id="email" type="email" placeholder="Enter email" value={email} onChange={e => onChange(e)}/>
-                <Form.Text className="text-muted">
-                  We'll never share your email with anyone else.
-                </Form.Text>
+                <Form.Control id="email" type="email" placeholder="Email" value={email} onChange={e => onChange(e)}/>
               </Form.Group>
 
               <Form.Group>
-                <Form.Label>Password</Form.Label>
                 <Form.Control id="password" type="password" placeholder="Password" value={password} onChange={e => onChange(e)}/>
               </Form.Group>
               <Form.Group controlId="formBasicCheckbox">
@@ -54,7 +49,8 @@ function Login({login, isAuthenticated}) {
               </Button>
             </Form>
             </div>
-          </Container>
+            </Container>
+
     )
 }
 

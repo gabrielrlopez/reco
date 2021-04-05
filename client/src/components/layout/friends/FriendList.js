@@ -1,16 +1,40 @@
 import React from 'react'
 import Card from 'react-bootstrap/esm/Card'
-import Container from 'react-bootstrap/esm/Container'
-import ListGroup from 'react-bootstrap/esm/ListGroup'
+import { deleteFriend } from '../../../actions/friends'
+import { connect } from 'react-redux'
+import  PropTypes from 'prop-types'
 
-const FriendList = ({friends}) => {
+import ListGroup from 'react-bootstrap/esm/ListGroup'
+import {XSquare} from 'react-bootstrap-icons'
+import Button from 'react-bootstrap/esm/Button'
+
+const FriendList = ({deleteFriend, friends}) => {
+
+    const unfriend = (e) => {
+        e.preventDefault()
+        deleteFriend(e.target.value)
+    }
+
     return (
-        <Card style={{width: "500px"}}>
+        <Card>
         <ListGroup variant="flush">
-            {friends.map(friend => <ListGroup.Item>{friend.userFullName}</ListGroup.Item>)}
+            {friends.map(friend => 
+                <ListGroup.Item 
+                    style = {{
+                        display: "flex", 
+                        justifyContent: "space-between"
+                    }        
+                }>
+                    {friend.userFullName}
+                    <Button value={friend.userId} variant="danger" onClick={unfriend}>Delete Friend</Button>
+                </ListGroup.Item>)}
         </ListGroup>
         </Card>
     )
 }
 
-export default FriendList
+FriendList.propType ={
+    deleteFriend: PropTypes.func.isRequired
+}
+
+export default connect(null, {deleteFriend})(FriendList)

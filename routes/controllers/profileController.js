@@ -49,7 +49,7 @@ exports.getSearchedProfile = catchErrorsAsync(async(req, res, next) => {
     if(!user) return next(new AppError('Could not find this user. Double check that the capitalization, spelling, any spaces, and numbers are correct.'))
     
     //If user exists then send their profile as a response
-    const userFullName = [user.firstName, user.lastName].toString()
+    const userFullName = [user.firstName, user.lastName]
     const profile = await Profile.findOne({
         user: user._id
     })
@@ -70,13 +70,13 @@ exports.deleteFriend = catchErrorsAsync(async(req, res, next) => {
     //Delete user from current users friends array 
     currentUserProfile = await Profile.findOneAndUpdate(
         {user: req.user.id},
-        {$pull: {"friends": friendUserId}}
+        {$pull: {"friends": {userId: friendUserId}}}
     )
 
     //Delete current user from deleted friend's friends array
     await Profile.findOneAndUpdate(
         {user: friendUserId},
-        {$pull: {"friends": req.user.id}}
+        {$pull: {"friends": {userId: req.user.id}}}
     )
     res.json(currentUserProfile)
 })

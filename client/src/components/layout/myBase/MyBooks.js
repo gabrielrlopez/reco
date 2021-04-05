@@ -21,7 +21,7 @@ const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
 
     const generateCarouselItem = (favoriteBooksArr, BookCards) => {
         let numberOfSlidesToRender
-        const booksPerSlide = 6
+        const booksPerSlide = 7
     
         if(!favoriteBooksArr.length > booksPerSlide) return (<Carousel.Item  data-interval="false">{BookCards}</Carousel.Item>)
 
@@ -29,25 +29,25 @@ const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
 
         for(let i = 1; i <= numberOfSlidesToRender; i++){
             let newBookArr = BookCards.splice(0, booksPerSlide)
-            console.log(newBookArr)
-            carouselItems.push(<Carousel.Item data-interval="false">{newBookArr}</Carousel.Item>)
+            carouselItems.push(<Carousel.Item data-interval="false" style={{display:"flex"}}>{newBookArr}</Carousel.Item>)
         }
+
         return carouselItems.map(item => item)
     }
 
         generateCarouselItem(favoriteBooks, favoriteBooks.map(book =>
-        <BookCard
-            key={book.googleId}
-            title={book.title}
-            authors={book.authors}
-            cover={book.cover}
-            book={book}
-            onClickFunction={deleteBookFromMyBase}
-            caption={'Remove'}
-            variant={'warning'}
-            caption2={'Reco A Friend'}
-            variant2={'danger'}
-        />
+            <BookCard
+                key={book.googleId}
+                title={book.title}
+                authors={book.authors}
+                cover={book.cover}
+                book={book}
+                onClickFunction={deleteBookFromMyBase}
+                caption={'Remove'}
+                variant={'warning'}
+                caption2={'Reco A Friend'}
+                variant2={'danger'}
+            />
         ))
 
     return  <>

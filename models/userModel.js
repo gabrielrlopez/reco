@@ -67,6 +67,7 @@ userSchema.pre('save', function(next){
     next()
 })
 
+//Unactive users wont show up in querys
 userSchema.pre(/^find/, function(next) {
     // this keyword points to the current query
     this.find({active: {$ne: false}})

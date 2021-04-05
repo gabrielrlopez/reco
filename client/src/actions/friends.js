@@ -14,10 +14,10 @@ export const searchFriends = (boolean) => async dispatch => {
 }
 
 
-export const deleteFriend = (friendId) => async dispatch => {
+export const deleteFriend = (friendUserId) => async dispatch => {
     try {
         const profile = {
-            friendId
+            friendUserId
         }
         const res = await api.post('/profiles/friends/delete', profile)
         dispatch({
