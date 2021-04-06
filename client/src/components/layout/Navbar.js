@@ -115,7 +115,7 @@ const Navigation = ({
       </>
     )
 
-    {/************************************Search bar*************************************/}
+      {/************************************Search bar*************************************/}
     const searchBar = (
       <>
       {/*************************************Manage Account************************************/}
@@ -132,7 +132,8 @@ const Navigation = ({
               <NavDropdown.Item href="#!" onClick={logout}>Logout</NavDropdown.Item>
 
           </NavDropdown>
-
+          
+      {/************************************Form Input*************************************/}
           <Form inline onSubmit={onSubmit}>
             <FormControl onChange={e => onChange(e)} value={searchInput} type="text" placeholder="Search Friends By Username" className="mr-sm-2" />
             <Button variant="outline-primary" type="submit">Search</Button>
@@ -152,13 +153,11 @@ const Navigation = ({
     return (
           <>
             <Navbar bg="light" variant="light" expand="lg">
-              <Container>
               <Navbar.Brand href="/">Reco</Navbar.Brand>
               <Nav className="mr-auto">
                 {!loading && isAuthenticated ? authLinks : null}
               </Nav>
                 {!loading && isAuthenticated ? searchBar : guestLinks}
-              </Container>
             </Navbar>
             {searchedProfile ? <Redirect to="/searchFriends" /> : null}
           </>

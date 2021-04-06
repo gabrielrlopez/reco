@@ -2,89 +2,93 @@ import React from 'react'
 import BookCard from '../cards/BookCard'
 import Spinner from '../Spinner'
 import {connect} from 'react-redux'
-import {deleteBookFromMyBase} from '../../../actions/myBase'
 import  PropTypes from 'prop-types'
-import '../styles/MyBooks.css'
 import NoBooks from '../notfound/NoBooks'
+import {deleteBookFromMyBase} from '../../../actions/myBase'
+import CardButton from '../cards/CardButton'
+import '../styles/MyBooks.css'
 
-import Carousel from 'react-bootstrap/Carousel'
-import Container from 'react-bootstrap/esm/Container'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
+import Carousel from 'react-multi-carousel'
+import "react-multi-carousel/lib/styles.css";
 
 
 const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
 
-    if(!profile || loading) return (<Spinner/>) 
+    if(!profile || loading) return <Spinner/> 
 
+    //Users books array
     const favoriteBooks = profile.data.userBase.books.favorites
     const readLaterBooks = profile.data.userBase.books.readLater
-    let carouselItems = []
 
-    const generateCarouselItem = (favoriteBooksArr, BookCards) => {
-        let numberOfSlidesToRender
-        const booksPerSlide = 7
-    
-        if(!favoriteBooksArr.length > booksPerSlide) return (<Carousel.Item  data-interval="false">{BookCards}</Carousel.Item>)
-
-        numberOfSlidesToRender = Math.ceil(favoriteBooks.length / booksPerSlide)
-
-        for(let i = 1; i <= numberOfSlidesToRender; i++){
-            let newBookArr = BookCards.splice(0, booksPerSlide)
-            carouselItems.push(<Carousel.Item data-interval="false" style={{display:"flex"}}>{newBookArr}</Carousel.Item>)
+    //Carousel responsive functionality
+    const responsive = {
+        desktop: {
+          breakpoint: { max: 2000, min: 1024 },
+          items: 9
+        },
+        tablet: {
+          breakpoint: { max: 1024, min: 464 },
+          items: 3
+        },
+        mobile: {
+          breakpoint: { max: 464, min: 0 },
+          items: 1
         }
-
-        return carouselItems.map(item => item)
     }
 
-        generateCarouselItem(favoriteBooks, favoriteBooks.map(book =>
-            <BookCard
-                key={book.googleId}
-                title={book.title}
-                authors={book.authors}
-                cover={book.cover}
-                book={book}
+    const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Options</Popover.Title>
+          <Popover.Content>
+            <CardButton 
+                // book={book}
+                caption={"Delete"}
+                variant={"warning"}
+                style={{marginRight: "5px"}}
                 onClickFunction={deleteBookFromMyBase}
-                caption={'Remove'}
-                variant={'warning'}
-                caption2={'Reco A Friend'}
-                variant2={'danger'}
             />
-        ))
+            <CardButton 
+                caption={"Reco"}
+                variant={"danger"}
+            />
+          </Popover.Content>
+        </Popover>
+    )
 
-    return  <>
-            
-            {favoriteBooks.length === 0 && readLaterBooks.length === 0 ? <NoBooks /> : 
+    return <>
+          {favoriteBooks.length === 0 && readLaterBooks.length === 0 ? <NoBooks /> : 
                 <>
-                    <h2>Favorites</h2>
-                            <Carousel interval={null}>
-                                {carouselItems}
-                            </Carousel>
+                    <h2 style={{margin: "23px"}}>Favorites</h2>
+                    <Carousel draggable={false} responsive={responsive} infinite={true}>
+                        {favoriteBooks.map(book => <BookCard
+                               key={book.googleId}
+                               book={book}
+                           />)}
+                    </Carousel>
 
-                    <h2>Read Later</h2>
-                            {readLaterBooks.map(book =>
-                                <BookCard
-                                    key={book.title}
-                                    title={book.title}
-                                    authors={book.authors}
-                                    cover={book.cover}
-                                    book={book}
-                                    type={book.addedTo}
-                                    onClickFunction={deleteBookFromMyBase}
-                                    caption={'Remove'}
-                                    variant={'warning'}
-                                    caption2={'Reco A Friend'}
-                                    variant2={'danger'}
-                                />
-                            )}
+                    <h2 style={{margin: "23px"}}>Read Later</h2>
+                        <Carousel responsive={responsive} infinite={true}>
+                            {readLaterBooks.map(book => 
+                              <OverlayTrigger rootClose trigger="click" placement="right" overlay={popover}>
+                              <BookCard
+                                 key={book.googleId}
+                                 book={book}
+                              />
+                              </OverlayTrigger>
+                              )}
+                        </Carousel>
                 </>
-            }
+          }
 
-        </>
+    </>
 }
 
 MyBooks.propTypes = {
-    deleteBookFromMyBase: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    profile:  PropTypes.object.isRequired
+    profile:  PropTypes.object.isRequired,
+    deleteBookFromMyBase: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({

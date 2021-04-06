@@ -16,8 +16,6 @@ import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/Row'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
-import PopoverContent from 'react-bootstrap/PopoverContent'
-import PopoverTitle from 'react-bootstrap/PopoverTitle'
 import ListGroup from 'react-bootstrap/ListGroup'
 
 
@@ -149,76 +147,84 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
 
 
     return (
-        <Container>
+        <Container style={{textAlign: "center"}}>
             <h1>Recommend a book to a friend, or add it to your library of favorites.</h1>
             <h2>Haven't read it? Add it to your "Read Later" library!</h2>
+
             <br></br>
+
             <Form onSubmit={onSubmit}>
                 <Form.Row className="align-items-center">
                     <Col>
                     <Form.Control size="lg" type="text" placeholder="Search books by author or title" id="searchInput" value={searchInput} onChange={e => onChange(e)} />
                     </Col>
-                    <Col>
+                   
                     <Button type="submit" className="mb-2" variant="outline-success">
                       Search
                     </Button>
-                    </Col>
+                 
                 </Form.Row>
             </Form>
+
             <br></br>
+
             {loading ? <Spinner /> : <CardColumns>
-            {searchResults.map(book => {
-                return <Card
-                border="primary"
-                style={{width: '18rem'}}
-                className='text-center'
-                key={book.googleId}
-                >
-                    <Card.Body>
-                        <Card.Header>
-                            {book.title}
-                        </Card.Header>
-
-                        {formatAuthors(book.authors)}
-
+                {searchResults.map(book => 
+                    <Card
+                        border="secondary"
+                        style={{width: '18rem'}}
+                        className='text-center'
+                        key={book.googleId}
+                    >
                         <Card.Body>
-                            <img src={book.cover}/>
-                            <Row 
-                            className="justify-content-md-center"
-                            style={{padding: '5px'}}
-                            >
-                                <Button 
-                                disabled={isDisabled}
-                                onClick={favorite}
-                                style={{marginRight: '5px'}}
-                                value={book.title}
-                                variant="primary">
-                                    Favorite
-                                </Button>
-                                <Button
-                                disabled={isDisabled}
-                                onClick={readLater}
-                                value={book.title}
-                                variant="primary">
-                                    Read later
-                                </Button>
-                            </Row>
-                            
-                            <OverlayTrigger trigger="click" placement="right" overlay={popover}>
-                                <Button 
-                                    variant="danger"
-                                    value={book.title}
-                                    onClick={storeBookToState}
-                                >
-                                Reco a friend
-                                </Button>
-                            </OverlayTrigger>
 
-                        </Card.Body>
-                    </Card.Body>    
-                </Card>
-            })}
-        </CardColumns>}
+                            <Card.Header>
+                                {book.title}
+                            </Card.Header>
+
+                            {formatAuthors(book.authors)}
+
+                            <Card.Body>
+                                <img src={book.cover}/>
+
+                                <Row 
+                                    className="justify-content-md-center"
+                                    style={{padding: '5px'}}
+                                >
+                                    <Button 
+                                        disabled={isDisabled}
+                                        onClick={favorite}
+                                        style={{marginRight: '5px'}}
+                                        value={book.title}
+                                        variant="primary"
+                                    >
+                                        Favorite
+                                    </Button>
+                                    <Button
+                                        disabled={isDisabled}
+                                        onClick={readLater}
+                                        value={book.title}
+                                        variant="primary"
+                                    >
+                                        Read later
+                                    </Button>
+                                </Row>
+
+                                <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                                    <Button 
+                                        variant="danger"
+                                        value={book.title}
+                                        onClick={storeBookToState}
+                                    >
+                                    Reco a friend
+                                    </Button>
+                                </OverlayTrigger>
+                            </Card.Body>
+
+                        </Card.Body>    
+                    </Card>
+                )}
+            </CardColumns>}
         </Container>
     )
 }

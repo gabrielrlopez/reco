@@ -1,28 +1,21 @@
 import React from 'react'
-import Card from 'react-bootstrap/Card'
 import CardButton from './CardButton'
-import Row from 'react-bootstrap/Row'
 import '../styles/BookCard.css'
+import {deleteBookFromMyBase} from '../../../actions/myBase'
+import {connect} from 'react-redux'
+import  PropTypes from 'prop-types'
+
+import Card from 'react-bootstrap/Card'
+import Row from 'react-bootstrap/Row'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
 
 const BookCard = (
-    {
-        title, 
-        authors, 
-        cover, 
-        onClickFunction, 
+    { 
+        deleteBookFromMyBase,
         book,
-        value, 
-        variant, 
-        caption,
-        style, 
-        onClickFunction2,
-        book2,
-        value2, 
-        variant2, 
-        caption2,
-        style2, 
     }) => {
-
+    
 
     //if book has more than one author render every author on a new line
     const formatAuthors = (arr) => {
@@ -30,42 +23,40 @@ const BookCard = (
         return arr.length > 1 ? arr.map((author, i) =>(<Card.Title key={i}>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
     }
 
+    const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">Options</Popover.Title>
+          <Popover.Content>
+            <CardButton 
+                book={book}
+                caption={"Delete"}
+                variant={"warning"}
+                style={{marginRight: "5px"}}
+                onClickFunction={deleteBookFromMyBase}
+            />
+            <CardButton 
+                caption={"Reco"}
+                variant={"danger"}
+            />
+          </Popover.Content>
+        </Popover>
+    )
+
     return <Card
     key={book.googleId}
-    border="secondary"
-    style={{width: '18rem'}}
-    className='text-center'
-    >
-        <Card.Body>
-            <Card.Header>
-                {title}
-            </Card.Header>
-            {formatAuthors(authors)}
+    border= "0"
+    style={{backgroundColor: "transparent", cursor: "pointer" }}
+    >   
+        <OverlayTrigger rootClose trigger="click" placement="right" overlay={popover}>
             <Card.Body>
-                <img src={cover}/>
-                
-                <Row
-                    className="justify-content-md-center"
-                    style={{padding: '5px'}}
-                >
-                    <CardButton
-                        onClickFunction={onClickFunction}
-                        book={book}
-                        caption={caption}
-                        variant={variant}
-                        style={{marginRight: '5px'}}
-                    />
-                    <CardButton
-                        onClickFunction={onClickFunction2}
-                        book={book2}
-                        caption={caption2}
-                        variant={variant2}
-                    />
-                </Row>
-
+                <img width="180" src={book.cover}/>
             </Card.Body>
-        </Card.Body>    
-    </Card> 
+        </OverlayTrigger>
+    </Card>
 }
 
-export default BookCard
+BookCard.propTypes = {
+    deleteBookFromMyBase: PropTypes.func.isRequired,
+}
+
+export default connect(null, {deleteBookFromMyBase})(BookCard)

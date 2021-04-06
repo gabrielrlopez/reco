@@ -47,7 +47,24 @@ const profileSchema = new mongoose.Schema({
             wantToPlay: []
         },
     },
-    recommendations: { 
+    Recos: { 
+        books: [
+            {
+                userId: String,
+                userName: String,
+                userFullName: String,
+                reco: book,
+                date: {
+                    type: Date,
+                    default: Date.now
+                },
+                seen: false,
+                thumbsUp: false,
+                thumbsDown: false
+            }
+        ]
+    },
+    sentRecos: {
         books: [
             {
                 userId: String,
