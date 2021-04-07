@@ -30,7 +30,7 @@ exports.sendFriendRequest = catchErrorsAsync(async(req, res, next) => {
         {$push: {"friendRequests.requests": {
             userId: currentUser._id,
             userName: currentUser.userName,
-            userFullName: [currentUser.firstName, currentUser.lastName].toString()
+            userFullName: [currentUser.firstName, currentUser.lastName]
         }}}
     )
 
@@ -38,8 +38,10 @@ exports.sendFriendRequest = catchErrorsAsync(async(req, res, next) => {
     const receivingUser = await User.findById(receiverUserId)
     const currentUserProfile = await Profile.findOneAndUpdate(
         {user: req.user.id},
-        {$push: {"friendRequests.sentRequests": receivingUser}}
+        {$push: {"friendRequests.sentRequests": receivingUser}},
     )
+
+
     res.json(currentUserProfile)
 })
 
@@ -56,6 +58,7 @@ exports.cancelFriendRequest = catchErrorsAsync(async(req, res, next) => {
         {user: requestedUserId},
         {$pull: {"friendRequests.requests": {userId: req.user.id}}}
     )
+    
     res.json(currentUserProfile)
 })
 
@@ -70,9 +73,10 @@ exports.acceptFriendRequest = catchErrorsAsync(async(req, res, next) => {
          $push: {"friends": {
             userId: senderUserProfile._id,
             userName: senderUserProfile.userName,
-            userFullName: [senderUserProfile.firstName, senderUserProfile.lastName].toString()
+            userFullName: [senderUserProfile.firstName, senderUserProfile.lastName]
          }}
-        }
+        },
+        {new: true}
     )
 
     //Delete the sent request from requesters sent requests array and push the requested user into the requestors friends array
@@ -83,11 +87,16 @@ exports.acceptFriendRequest = catchErrorsAsync(async(req, res, next) => {
          $push: {"friends": {
             userId: currentUser._id,
             userName: currentUser.userName,
-            userFullName: [currentUser.firstName, currentUser.lastName].toString()
+            userFullName: [currentUser.firstName, currentUser.lastName]
          }}
-        }
+        },
+        {new: true}
     )
-    res.json(currentUserProfile)
+
+    res.status(200).json({
+        status: "success",
+        data: currentUserProfile
+    })
 })
 
 exports.declineFriendRequest = catchErrorsAsync(async(req, res, next) => {
@@ -96,14 +105,19 @@ exports.declineFriendRequest = catchErrorsAsync(async(req, res, next) => {
     //Delete request from current users requests array
     const currentUserProfile = await Profile.findOneAndUpdate(
         {user: req.user.id},
-        {$pull: {"friendRequests.requests": {userId: senderUserId}}}
+        {$pull: {"friendRequests.requests": {userId: senderUserId}}},
+        {new: true}
     )
 
     //Delete sent request from the user's sent request array that sent the request
     await Profile.findOneAndUpdate(
         {user: senderUserId},
-        {$pull: {"friendRequests.sentRequests": req.user.id}}
+        {$pull: {"friendRequests.sentRequests": req.user.id}},
+        {new: true}
     )
 
-    res.status(200).json(currentUserProfile)
+    res.status(200).json({
+        status: "success",
+        data: currentUserProfile
+    })
 })

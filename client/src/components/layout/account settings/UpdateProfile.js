@@ -30,7 +30,7 @@ const UpdateProfile = ({updateUserInfo}) => {
         <>
 
           
-          <div className="form-container" style={{margin: "0 auto"}}>
+          <div className="form-container" style={{margin: "0 auto", marginTop: "20px"}}>
           <h1>Update Your Profile <Pen /></h1>
           <Form onSubmit={onSubmit}>
 

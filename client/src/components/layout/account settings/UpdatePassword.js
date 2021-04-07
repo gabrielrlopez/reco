@@ -27,7 +27,7 @@ const UpdatePassword = ({updatePassword}) => {
 
     return (
         <>
-        <div className="form-container" style={{margin: "0 auto"}}>
+        <div className="form-container" style={{margin: "0 auto", marginTop: "20px"}}>
           <Form onSubmit={onSubmit}>
           <h1>Password Change <Lock /> </h1>  
               

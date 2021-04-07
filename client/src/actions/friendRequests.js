@@ -59,10 +59,10 @@ export const acceptFriendRequest = (senderUserId) => async dispatch => {
         const profile = {
             senderUserId
         }
-        const res = api.post('/profiles/requests/accept', profile)
+        const res = await api.post('/profiles/requests/accept', profile)
         dispatch({
             type: UPDATE_PROFILE,
-            payload: res
+            payload: res.data
         })
     } catch (error) {
         const errors = error.response.data
@@ -84,10 +84,10 @@ export const declineFriendRequest = (senderUserId, senderUserName, senderUserFul
             senderUserName,
             senderUserFullName
         }
-        const res = api.post('/profiles/requests/decline', profile)
+        const res = await api.post('/profiles/requests/decline', profile)
         dispatch({
             type: UPDATE_PROFILE,
-            payload: res
+            payload: res.data
         })
     } catch (error) {
         const errors = error.response.data

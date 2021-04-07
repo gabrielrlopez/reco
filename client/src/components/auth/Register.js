@@ -31,9 +31,9 @@ function Register({signUp, isAuthenticated}) {
     }
 
     return (
-          <Container>
+          <Container style={{marginTop: "20px"}}>
             <div className="form-container" style={{margin: "0 auto"}}>
-              <h1>Sign Up</h1>
+              <h1>Sign up</h1>
               <Form onSubmit={e => onSubmit(e)}>
 
                 <Form.Group>

@@ -22,7 +22,7 @@ export const deleteFriend = (friendUserId) => async dispatch => {
         const res = await api.post('/profiles/friends/delete', profile)
         dispatch({
             type: UPDATE_PROFILE,
-            payload: res
+            payload: res.data
         })
     } catch (error) {
         dispatch({

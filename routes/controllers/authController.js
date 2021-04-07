@@ -78,6 +78,7 @@ exports.logout = async(req, res) => {
 
 //Used for protected routes to make sure user is logged in and authernticated
 exports.isLoggedIn = async(req, res, next) => {
+    if(!req.cookies.jwt) return next(new AppError('NOT LOGGED IN!'))
     // 1) Check if token exists
     if(req.cookies.jwt){
         try {

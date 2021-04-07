@@ -25,7 +25,7 @@ const Users = (
     }, [searchedFriends])
 
     if(!profile) return (<Spinner/>)
-    if(!searchedProfile) return (<h1>No Results</h1>)
+    if(!searchedProfile) return <Redirect to='/friends'/>
     
 
     const currentUserFriends = profile.data.friends
@@ -83,20 +83,22 @@ const Users = (
             <Container>
                 <Jumbotron>
                     <h1>{searchedUserName}</h1>
-                    <h5>{searchedUserFullName}'s favorites by category</h5>
-                    <h5>{searchedUserFullName}'s friends</h5>
+                    <h5>{`${searchedUserFullName[0]}`}'s favorites by category</h5>
+                    <h5>{`${searchedUserFullName[0]}`}'s friends</h5>
                 </Jumbotron>
             </Container>
 
             :
 
         <Container>
-            <Jumbotron>
+            <Jumbotron style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+              <div>
               <h1>{searchedUserName}</h1>
-              <h5>{searchedUserFullName}</h5>
+              <h5>{`${searchedUserFullName[0]} ${searchedUserFullName[1]}`}</h5>
               <p>
                 In order to send this user Recos or view their profile you must be friends.
               </p>
+              </div>
               <p>
                 {renderButton()}
               </p>

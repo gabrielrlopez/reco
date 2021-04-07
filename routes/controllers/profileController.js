@@ -70,13 +70,18 @@ exports.deleteFriend = catchErrorsAsync(async(req, res, next) => {
     //Delete user from current users friends array 
     currentUserProfile = await Profile.findOneAndUpdate(
         {user: req.user.id},
-        {$pull: {"friends": {userId: friendUserId}}}
+        {$pull: {"friends": {userId: friendUserId}}},
+        {new: true}
     )
-
+    
     //Delete current user from deleted friend's friends array
     await Profile.findOneAndUpdate(
         {user: friendUserId},
-        {$pull: {"friends": {userId: req.user.id}}}
+        {$pull: {"friends": {userId: req.user.id}}},
+        {new: true}
     )
-    res.json(currentUserProfile)
+    res.status(200).json({
+        status: "success",
+        data: currentUserProfile
+    })
 })

@@ -30,9 +30,11 @@ function Login({login, isAuthenticated}) {
 
 
     return (
-            <Container>
+            <Container style={{marginTop: "20px"}}>
             <div className="form-container" style={{margin: "0 auto"}}>
-            <h1>Login</h1>
+            <h1>Log in</h1>
+            <h5>Not registered with us yet? <a href="/register">Sign up</a></h5>
+            <br></br>
             <Form onSubmit={onSubmit}>
               <Form.Group>
                 <Form.Control id="email" type="email" placeholder="Email" value={email} onChange={e => onChange(e)}/>

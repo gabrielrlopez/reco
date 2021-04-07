@@ -4,9 +4,16 @@ import {
     GET_PROFILE,
     UPDATE_PROFILE,
     GET_SEARCHED_PROFILE,
-    GET_PROFILES,
     PROFILE_ERROR,
+    RENDERED
 } from './types'
+
+export const reRender = (boolean) => async dispatch => {
+    dispatch({
+        type: RENDERED,
+        payload: boolean
+    })
+}
 
 export const getCurrentProfile = () => async dispatch => {
     try {

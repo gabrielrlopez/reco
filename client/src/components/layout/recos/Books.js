@@ -210,7 +210,7 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
                                     </Button>
                                 </Row>
 
-                                <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={popover}>
                                     <Button 
                                         variant="danger"
                                         value={book.title}

@@ -13,6 +13,7 @@ import Landing from './components/layout/Landing'
 import Books from './components/layout/recos/Books'
 import MyBooks from './components/layout/myBase/MyBooks'
 import MyRecos from './components/layout/myRecos/MyRecos'
+import FriendRequests from './components/layout/friends/FriendRequests'
 import Friends from './components/layout/friends/Friends'
 import Users from './components/layout/Users'
 import './App.css'
@@ -43,6 +44,7 @@ const App = () => {
                   <PrivateRoute exact path='/myRecos' component={MyRecos} />
                   <PrivateRoute exact path='/send-new-reco/books' component={Books}/>
                   <PrivateRoute exact path='/searchFriends' component={Users}/>
+                  <PrivateRoute exact path='/friendRequests' component={FriendRequests}/>
                   <PrivateRoute exact path='/friends' component={Friends}/>
                   </Switch>
         </BrowserRouter> 

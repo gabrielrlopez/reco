@@ -47,12 +47,12 @@ const profileSchema = new mongoose.Schema({
             wantToPlay: []
         },
     },
-    Recos: { 
+    recos: { 
         books: [
             {
                 userId: String,
                 userName: String,
-                userFullName: String,
+                userFullName: [String],
                 reco: book,
                 date: {
                     type: Date,
@@ -69,7 +69,7 @@ const profileSchema = new mongoose.Schema({
             {
                 userId: String,
                 userName: String,
-                userFullName: String,
+                userFullName: [String],
                 reco: book,
                 date: {
                     type: Date,
@@ -88,7 +88,7 @@ const profileSchema = new mongoose.Schema({
         {
             userId: String,
             userName: String,
-            userFullName: String
+            userFullName: [String]
         },
     ],
     friendRequests: {
@@ -96,7 +96,7 @@ const profileSchema = new mongoose.Schema({
             {
                 userId: String,
                 userName: String,
-                userFullName: String
+                userFullName: [String]
             },
         ],
         sentRequests: [

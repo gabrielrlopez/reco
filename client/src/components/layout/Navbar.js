@@ -30,9 +30,8 @@ const Navigation = ({
 
     const onSubmit = (e) => {
       e.preventDefault()
-      if(searchInput){
-        getSearchedProfile(searchInput)
-      }
+      if(!searchInput) return 
+      getSearchedProfile(searchInput)
       searchFriends(true)
       setSearchInput('')
     }
@@ -108,9 +107,13 @@ const Navigation = ({
 
       {/*************************************My Recos*************************************/}
 
-      {profile ? <Nav.Link href="/myRecos"> My Recos{profile.data.recommendations.books.length > 0 ? <Badge variant="danger">{profile.data.recommendations.books.length}</Badge> : null}</Nav.Link> : 
-      <Nav.Link href="/myRecos">Recos</Nav.Link>}
+      {profile ? <Nav.Link href="/myRecos"> My Recos{profile.data.recos.books.length > 0 ? <Badge variant="danger">{profile.data.recos.books.length}</Badge> : null}</Nav.Link> : 
+      <Nav.Link href="/myRecos">My Recos</Nav.Link>}
 
+      {/*************************************Request*************************************/}
+
+      {profile ? <Nav.Link href="/friendRequests"> Requests{profile.data.friendRequests.requests.length > 0 ? <Badge variant="danger">{profile.data.friendRequests.requests.length}</Badge> : null}</Nav.Link> : 
+      <Nav.Link href="/friendRequests">Requests</Nav.Link>}
     
       </>
     )
@@ -152,7 +155,7 @@ const Navigation = ({
 
     return (
           <>
-            <Navbar bg="light" variant="light" expand="lg">
+            <Navbar style={{marginBottom:"20px"}} bg="light" variant="light" expand="lg">
               <Navbar.Brand href="/">Reco</Navbar.Brand>
               <Nav className="mr-auto">
                 {!loading && isAuthenticated ? authLinks : null}
