@@ -30,9 +30,13 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
     const onChange = (e) => setSearchInput(e.target.value)
 
     const searchGoogleBooks = async (input) => {
+       
        setLoading(true)
+       
        if(!input) return (setLoading(false))
+       
        const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=40&key=${process.env.REACT_APP_BOOK_API_KEY}`)
+
        const books = data.data['items'].map(book => {
             const {volumeInfo} = book
             book = {
@@ -51,9 +55,13 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
             }
             return book
        })
+
        let bookResults = books.filter(book => book.cover !== undefined )
+
        bookResults.map(book => book.cover = book.cover.thumbnail)
+       
        setSearchResults(bookResults)
+
        setLoading(false)
     }
 
@@ -114,10 +122,12 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
 
     //Send the recommendation 
     const sendNewRecommendation = (e) => {
+        setLoading(true)
         e.preventDefault()
         try {
             const friendId = e.target.value
-            sendNewReco(friendId, bookReco)            
+            sendNewReco(friendId, bookReco)    
+            setLoading(false)        
         } catch (error) {
             console.error(error.message)
         }
@@ -126,21 +136,26 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
     //Popover
     const popover = (
         <Popover id="popover-basic">
+
           <Popover.Title as="h3">Select A Friend To Reco This Book</Popover.Title>
-          <Popover.Content>
-            <ListGroup variant="flush">
-                {!profile ? <Spinner /> : profile.data.friends.map((friend, i) => 
-                    <ListGroup.Item
-                     action 
-                     key={i}
-                     value={friend.userId}
-                     onClick={sendNewRecommendation}
-                    >
-                    {friend.userFullName}
-                    </ListGroup.Item> 
-                )}
-            </ListGroup>
-          </Popover.Content>
+
+          {loading ? <Spinner /> : 
+            <Popover.Content> 
+              <ListGroup variant="flush">
+                  {!profile ? <Spinner /> : profile.data.friends.map((friend, i) => 
+                      <ListGroup.Item
+                       action 
+                       key={i}
+                       value={friend.userId}
+                       onClick={sendNewRecommendation}
+                      >
+                      {`${friend.userFullName[0]} ${friend.userFullName[1]} `}
+                      </ListGroup.Item> 
+                  )}
+              </ListGroup>
+            </Popover.Content>
+          }
+
         </Popover>
     )
 
@@ -219,6 +234,7 @@ const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
                                     Reco a friend
                                     </Button>
                                 </OverlayTrigger>
+
                             </Card.Body>
 
                         </Card.Body>    

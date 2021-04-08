@@ -1,9 +1,8 @@
 import React from 'react'
 import './styles/Landing.css'
 import {connect} from 'react-redux'
-import {Redirect} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import Container from 'react-bootstrap/esm/Container'
 
 function Landing({auth: {isAuthenticated}}) {
     if(isAuthenticated) {
@@ -11,9 +10,24 @@ function Landing({auth: {isAuthenticated}}) {
     }
 
     return (
-        <Container>
-            <h1>Welcome to Reco! Where your friend has a new experience waiting for you!</h1>
-        </Container>
+    <section className='landing'>
+      <div className='dark-overlay'>
+        <div className='landing-inner'>
+          <h1 className='x-large'>Welcome to Reco!</h1>
+          <p className='lead'>
+            Where your friend has a new experience waiting for you
+          </p>
+          <div className='buttons'>
+            <Link to='/register' className='btn btn-primary' style={{marginRight: "5px"}}>
+              Sign Up
+            </Link>
+            <Link to='/login' className='btn btn-light'>
+              Login
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
     )
 }
 

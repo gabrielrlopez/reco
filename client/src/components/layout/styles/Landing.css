@@ -1,10 +1,26 @@
-.body {
-  background-image: linear-gradient(
-    to bottom,
-    #aeaeae,
-    #ada8c3,
-    #aba2d8,
-    #aa9bec,
-    #a893ff
-  );
+.landing {
+  position: relative;
+  background: url("../../../assets/13.png") no-repeat center center/cover;
+  height: 100vh;
+}
+
+.landing-inner {
+  color: #fff;
+  height: 100%;
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dark-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }

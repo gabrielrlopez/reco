@@ -17,12 +17,10 @@ const Alerting = ({alerts}) => {
     // }    
 
     return alerts !== null && alerts.length > 0 && alerts.map(alert => (
-    <Container>
     <Alert key={alert.id} variant={alert.alertType}>
         {/* {iconRendered(alert.msg)} */}
         {alert.msg}
     </Alert>
-    </Container>
     ))
 }
 

@@ -90,7 +90,7 @@ const Users = (
 
             :
 
-        <Container>
+        <Container style={{marginTop: "20px"}}>
             <Jumbotron style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
               <div>
               <h1>{searchedUserName}</h1>

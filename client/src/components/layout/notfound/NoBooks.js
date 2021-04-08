@@ -7,6 +7,7 @@ import {Bookshelf} from 'react-bootstrap-icons'
 const NoBooks = () => {
     return (
         <>
+        
             <Container className="centered">
                 <h6>You have no books saved in your base</h6>
                 <Bookshelf size={100}/>

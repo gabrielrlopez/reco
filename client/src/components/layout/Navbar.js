@@ -155,7 +155,7 @@ const Navigation = ({
 
     return (
           <>
-            <Navbar style={{marginBottom:"20px"}} bg="light" variant="light" expand="lg">
+            <Navbar  bg="light" variant="light" expand="lg">
               <Navbar.Brand href="/">Reco</Navbar.Brand>
               <Nav className="mr-auto">
                 {!loading && isAuthenticated ? authLinks : null}
