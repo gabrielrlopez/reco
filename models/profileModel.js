@@ -58,9 +58,18 @@ const profileSchema = new mongoose.Schema({
                     type: Date,
                     default: Date.now
                 },
-                seen: false,
-                thumbsUp: false,
-                thumbsDown: false
+                seen: {
+                    type: Boolean,
+                    default: false
+                },
+                thumbsUp: {
+                    type: Boolean,
+                    default: false
+                },
+                thumbsDown: {
+                    type: Boolean,
+                    default: false
+                },
             }
         ]
     },
@@ -75,9 +84,18 @@ const profileSchema = new mongoose.Schema({
                     type: Date,
                     default: Date.now
                 },
-                seen: false,
-                thumbsUp: false,
-                thumbsDown: false
+                seen: {
+                    type: Boolean,
+                    default: false
+                },
+                thumbsUp: {
+                    type: Boolean,
+                    default: false
+                },
+                thumbsDown: {
+                    type: Boolean,
+                    default: false
+                },
             }
         ]
     },

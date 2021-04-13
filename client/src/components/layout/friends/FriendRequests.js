@@ -21,7 +21,9 @@ const FriendRequests = ({
     useEffect(() => {}, [rendered])
     
     if(!profile || loading) return (<Spinner/>)
-
+    
+    const currentUserFriendRequests = profile.data.friendRequests
+    
     const acceptRequest = (e) => {
         acceptFriendRequest(e.target.value)
         reRender(true)
@@ -31,7 +33,6 @@ const FriendRequests = ({
         reRender(true)
     }
 
-    const currentUserFriendRequests = profile.data.friendRequests
 
     return (
         <>

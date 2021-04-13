@@ -7,7 +7,7 @@ import {
 
 export const addBookToMyBase = (book) => async dispatch => {
     try {
-        const res = await api.put('/books/myBooks', book)
+        const res = await api.put('/base/myBooks', book)
         dispatch({
             type: UPDATE_PROFILE,
             payload: res.data
@@ -28,7 +28,7 @@ export const addBookToMyBase = (book) => async dispatch => {
 
 export const deleteBookFromMyBase = (book) => async dispatch => {
     try {
-        const res = await api.put(`/books/myBooks/${book._id}`, book)
+        const res = await api.put(`/base/myBooks/${book._id}`, book)
         dispatch({
             type: UPDATE_PROFILE,
             payload: res

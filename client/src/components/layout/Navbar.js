@@ -20,7 +20,7 @@ import Container from 'react-bootstrap/esm/Container'
 const Navigation = ({
   getSearchedProfile,
   searchFriends,
-  logout,
+  logout,   
   profile:{searchedProfile, profile},
   auth: {isAuthenticated, loading}
   }) => {
@@ -34,6 +34,15 @@ const Navigation = ({
       getSearchedProfile(searchInput)
       searchFriends(true)
       setSearchInput('')
+    }
+
+    //Returns the number of recos in which their "seen" property is not true
+    const recoCounter = (arr) => {
+      let counter = 0 
+      arr.map(arr => {
+        if(arr.seen === false) counter++
+      })
+      return counter
     }
 
 
@@ -107,7 +116,7 @@ const Navigation = ({
 
       {/*************************************My Recos*************************************/}
 
-      {profile ? <Nav.Link href="/myRecos"> My Recos{profile.data.recos.books.length > 0 ? <Badge variant="danger">{profile.data.recos.books.length}</Badge> : null}</Nav.Link> : 
+      {profile ? <Nav.Link href="/myRecos"> My Recos{recoCounter(profile.data.recos.books) > 0 ? <Badge variant="danger">{recoCounter(profile.data.recos.books)}</Badge> : null}</Nav.Link> : 
       <Nav.Link href="/myRecos">My Recos</Nav.Link>}
 
       {/*************************************Request*************************************/}

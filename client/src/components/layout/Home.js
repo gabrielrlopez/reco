@@ -18,6 +18,16 @@ function Home(
         <h1>
          Hi, {user.firstName}
         </h1>
+
+        {/**If user has no books saved to their base */}
+        <h1>Start Saving books to your personal base!</h1>
+
+        {/**If user has friends */}
+        <h1>See what your friends are reading</h1>
+
+        {/**Recommend books based on what their favorites/readLater consist of */}
+
+
     </Container> 
 }
 

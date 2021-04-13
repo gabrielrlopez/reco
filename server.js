@@ -12,7 +12,8 @@ const globalErrorHandler = require('./routes/controllers/errorController')
 const AppError = require('./utils/appError')
 const userRoutes = require('./routes/api/users')
 const profileRoutes = require('./routes/api/profile')
-const bookRoutes = require('./routes/api/books')
+const userBaseRoutes = require('./routes/api/base')
+const recoRoutes = require('./routes/api/recos')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
@@ -54,7 +55,8 @@ app.use((req, res, next) => {
 //Routes
 app.use('/api/users', userRoutes)
 app.use('/api/profiles', profileRoutes)
-app.use('/api/books', bookRoutes)
+app.use('/api/base', userBaseRoutes)
+app.use('/api/recos', recoRoutes)
 
 //Error handling for any routes trying to be accessed that do not exist
 app.all('*', (req, res, next) => {

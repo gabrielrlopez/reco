@@ -1,10 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import BookCard from '../cards/BookCard'
 import BookRating from '../myRecos/BookRating'
 import  PropTypes from 'prop-types'
 import Spinner from '../Spinner'
 import dateformat from 'dateformat'
+import {deleteReco, markRecoAsSeen} from '../../../actions/reco'
+
 import '../styles/MyRecos.css'
 import '../styles/BookRating.css'
 import NoRecos from '../notfound/NoRecos'
@@ -14,13 +15,28 @@ import Container from 'react-bootstrap/esm/Container'
 import Table from 'react-bootstrap/Table'
 import Button from 'react-bootstrap/Button'
 import {HandThumbsUp, HandThumbsDown} from 'react-bootstrap-icons'
+import Card from 'react-bootstrap/esm/Card'
 
-const MyRecos = ({profile: {profile, loading}}) => {
+const MyRecos = ({deleteReco, markRecoAsSeen, profile: {profile, loading}}) => {
 
     if(!profile) return (<Spinner/>)
 
     const recos = profile.data.recos.books
-    
+
+    //Delete reco
+    const deleteRecos = (e) => {
+        e.preventDefault()
+        const recoId = e.target.value
+        deleteReco(recoId)
+    }
+
+    //Mark reco as seen
+    const seenReco = (e) => {
+        e.preventDefault()
+        const recoId = e.target.value
+        markRecoAsSeen(recoId)
+    }
+
     return (
         <>
             {recos.length === 0 ? <NoRecos /> :
@@ -29,6 +45,7 @@ const MyRecos = ({profile: {profile, loading}}) => {
                 <h1>Books</h1>
 
                         <>
+
                             {loading && profile === null ? <Spinner/> : recos.map(book =>
                                 <Jumbotron>
                                 
@@ -67,30 +84,38 @@ const MyRecos = ({profile: {profile, loading}}) => {
 
                                             <h6>Maturity Rating</h6>
                                             <p>{book.reco.maturityRating}</p>
-                                
-                                            {/* <h3><a href={book.reco.previewLink}>Book Preview</a></h3>
+
+                                        </div>
+
+                                        <Card
+                                            key={book.googleId}
+                                            border= "0"
+                                            style={{backgroundColor: "transparent"}}
+                                        >
+                                            <Card.Body>
+                                                <img width="180" src={book.reco.cover}/>
+                                            </Card.Body>
+                                        </Card>
+
+                                        <div>
+                                            <h3>Average Rating</h3>
+                                            <h5>(Rated by readers on Google)</h5>
+
+                                            <br></br>
+
+                                            <BookRating  rating={book.reco.averageRating}/>
+
+                                            
+                                            
+                                            <h3 style={{marginTop: "60px"}}><a href={book.reco.previewLink}>Book Preview</a></h3>
                                 
                                             <br></br>
 
                                             <HandThumbsUp className="thumbsUp" size={25}/>
                                             <HandThumbsDown className="thumbsDown" size={25} style={{margin: "10px"}}/>
-                                            <Button>Mark As Seen</Button> */}
+                                            <Button className={book.seen === true ? "hidden" : null} style={{marginRight: "5px"}} value={book._id} onClick={seenReco}>Mark As Seen</Button>
+                                            <Button variant='danger' value={book._id} onClick={deleteRecos}>Delete</Button>
 
-                                        </div>
-
-                                        <BookCard
-                                            key={book.reco.googleId}
-                                            book={book.reco}
-                                            // onClickFunction={}
-                                            caption={'Remove'}
-                                            variant={'warning'}
-                                            caption2={'Reco A Friend'}
-                                            variant2={'danger'}
-                                        />
-
-                                        <div>
-                                        <h3>Average Rating</h3>
-                                        <BookRating rating={book.reco.averageRating}/>
                                         </div>
                                         
                                     </div>
@@ -105,8 +130,13 @@ const MyRecos = ({profile: {profile, loading}}) => {
     )
 }
 
+MyRecos.propType = {
+    deleteReco: PropTypes.func.isRequired,
+    markRecoAsSeen: PropTypes.func.isRequired,
+}
+
 const mapStateToProps = (state) => ({
     profile: state.profile
 })
 
-export default connect(mapStateToProps, null)(MyRecos)
+export default connect(mapStateToProps, {deleteReco, markRecoAsSeen})(MyRecos)

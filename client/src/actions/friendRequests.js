@@ -16,7 +16,7 @@ export const sendFriendRequest = (receiverUserId, receiverFullName) => async dis
             type: UPDATE_PROFILE,
             payload: res
         })
-        dispatch(setAlert(`Friend request sent to ${receiverFullName}`, 'success', 3000))
+        dispatch(setAlert(`Friend request sent to ${receiverFullName[0]} ${receiverFullName[1]}`, 'success', 3000))
     } catch (error) {
         const errors = error.response.data
         if(errors){

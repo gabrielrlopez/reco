@@ -19,8 +19,6 @@ router.post('/search',
 //Delete a friend
 router.post('/friends/delete', authController.protect, profileController.deleteFriend)
 
-//Send a new recommendation 
-router.post('/sendReco', authController.protect, recoController.sendNewReco)
 
 //Send and receive friend requests
 router.post('/requests', authController.protect,

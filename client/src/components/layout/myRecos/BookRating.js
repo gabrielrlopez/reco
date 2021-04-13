@@ -14,16 +14,18 @@ const BookRating = ({rating}) => {
         if(rating % 1 !== 0 ){
             const fullStars = Math.floor(rating)
             for(let i = 0; i < fullStars; i++){
-                totalRating.push(<StarFill />)
+                totalRating.push(<StarFill  style={{color: "gold"}} size={45} />)
             }
-            totalRating.push(<StarHalf />)
+            totalRating.push(<StarHalf style={{color: "gold"}} size={45} />)
         } else {
             for(let i = 0; i < rating; i++){
-                totalRating.push(<StarFill />)
+                totalRating.push(<StarFill style={{color: "gold"}} size={45} />)
             }
         }
+
         return totalRating
     }
+
 
     return (
         <>
