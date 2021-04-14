@@ -71,13 +71,18 @@ exports.acceptFriendRequest = catchErrorsAsync(async(req, res, next) => {
         {user: req.user.id},
         {$pull: {"friendRequests.requests": {userId: senderUserId}},
          $push: {"friends": {
-            userId: senderUserProfile._id,
-            userName: senderUserProfile.userName,
-            userFullName: [senderUserProfile.firstName, senderUserProfile.lastName]
-         }}
-        },
+            $each: [
+                {
+                    userFullName: [senderUserProfile.firstName, senderUserProfile.lastName],
+                    userId: senderUserProfile._id,
+                    userName: senderUserProfile.userName,
+                }
+            ],
+            $sort: {userFullName: 1}
+        }}},
         {new: true}
     )
+
 
     //Delete the sent request from requesters sent requests array and push the requested user into the requestors friends array
     const currentUser = await User.findById(req.user.id)

@@ -3,11 +3,12 @@ import './styles/Landing.css'
 import {connect} from 'react-redux'
 import {Redirect, Link} from 'react-router-dom'
 import PropTypes from 'prop-types'
+import Spinner from 'react-bootstrap/esm/Spinner'
 
-function Landing({auth: {isAuthenticated}}) {
-    if(isAuthenticated) {
-       return <Redirect to='/home'/>
-    }
+function Landing({auth: {isAuthenticated, loading}}) {
+
+    if(loading) return <Spinner />
+    if(isAuthenticated) return <Redirect to='/home'/>
 
     return (
     <section className='landing'>

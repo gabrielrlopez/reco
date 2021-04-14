@@ -1,6 +1,5 @@
-import {React, useEffect} from 'react'
+import {React} from 'react'
 import {connect} from 'react-redux'
-import {getCurrentProfile} from '../../../actions/profile'
 import NoFriends from '../notfound/NoFriends'
 
 import Container from 'react-bootstrap/esm/Container'
@@ -8,7 +7,7 @@ import Spinner from '../Spinner'
 import FriendList from './FriendList'
 
 
-const Friends = ({profile:{profile, loading, rendered}}) => {
+const Friends = ({profile:{profile, loading}}) => {
 
 
     if(!profile || loading) return (<Spinner/>)

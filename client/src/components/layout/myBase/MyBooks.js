@@ -11,7 +11,7 @@ import '../styles/MyBooks.css'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Carousel from 'react-multi-carousel'
-import "react-multi-carousel/lib/styles.css";
+import "react-multi-carousel/lib/styles.css"
 
 
 const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
@@ -49,10 +49,6 @@ const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
                 style={{marginRight: "5px"}}
                 onClickFunction={deleteBookFromMyBase}
             />
-            <CardButton 
-                caption={"Reco"}
-                variant={"danger"}
-            />
           </Popover.Content>
         </Popover>
     )
@@ -68,6 +64,8 @@ const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
                            />)}
                     </Carousel>
 
+                    {readLaterBooks.length === 0 ? null : 
+                    <>
                     <h2 style={{margin: "23px"}}>Read Later</h2>
                         <Carousel responsive={responsive} infinite={true}>
                             {readLaterBooks.map(book => 
@@ -79,9 +77,10 @@ const MyBooks = ({deleteBookFromMyBase, profile: {profile, loading}}) => {
                               </OverlayTrigger>
                               )}
                         </Carousel>
+                    </>
+                    }
                 </>
           }
-
     </>
 }
 

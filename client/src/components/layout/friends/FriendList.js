@@ -5,17 +5,17 @@ import { connect } from 'react-redux'
 import  PropTypes from 'prop-types'
 
 import ListGroup from 'react-bootstrap/esm/ListGroup'
-import {XSquare} from 'react-bootstrap-icons'
 import Button from 'react-bootstrap/esm/Button'
-import { reRender } from '../../../actions/profile'
 
-const FriendList = ({deleteFriend, reRender, friends}) => {
+const FriendList = ({deleteFriend, friends}) => {
 
     const unfriend = (e) => {
         e.preventDefault()
         deleteFriend(e.target.value)
-        reRender(true)
     }
+
+
+    
 
     return (
         <Card>
@@ -26,7 +26,7 @@ const FriendList = ({deleteFriend, reRender, friends}) => {
                         display: "flex", 
                         justifyContent: "space-between",
                         alignItems: "center"
-                    }        
+                    }
                 }>
                     {`${friend.userFullName[0]} ${friend.userFullName[1]}`}
                     <Button value={friend.userId} variant="danger" onClick={unfriend}>Delete Friend</Button>
@@ -38,7 +38,6 @@ const FriendList = ({deleteFriend, reRender, friends}) => {
 
 FriendList.propType ={
     deleteFriend: PropTypes.func.isRequired,
-    reRender: PropTypes.func.isRequired
 }
 
-export default connect(null, {deleteFriend, reRender})(FriendList)
+export default connect(null, {deleteFriend})(FriendList)

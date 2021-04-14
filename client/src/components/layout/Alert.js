@@ -17,7 +17,7 @@ const Alerting = ({alerts}) => {
     // }    
 
     return alerts !== null && alerts.length > 0 && alerts.map(alert => (
-    <Alert key={alert.id} variant={alert.alertType}>
+    <Alert key={alert.id} variant={alert.alertType} style={{position: "fixed", zIndex: 999}}>
         {/* {iconRendered(alert.msg)} */}
         {alert.msg}
     </Alert>

@@ -34,10 +34,6 @@ const BookCard = (
                 style={{marginRight: "5px"}}
                 onClickFunction={deleteBookFromMyBase}
             />
-            <CardButton 
-                caption={"Reco"}
-                variant={"danger"}
-            />
           </Popover.Content>
         </Popover>
     )

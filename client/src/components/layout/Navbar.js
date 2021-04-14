@@ -13,7 +13,6 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import {Redirect} from 'react-router-dom'
 import Badge from 'react-bootstrap/Badge'
-import Container from 'react-bootstrap/esm/Container'
 
 
 
@@ -164,7 +163,7 @@ const Navigation = ({
 
     return (
           <>
-            <Navbar  bg="light" variant="light" expand="lg">
+            <Navbar  bg="light" variant="light" expand="lg" sticky='top'>
               <Navbar.Brand href="/">Reco</Navbar.Brand>
               <Nav className="mr-auto">
                 {!loading && isAuthenticated ? authLinks : null}
