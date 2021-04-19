@@ -1,87 +1,101 @@
-const User = require('../../models/userModel')
-const Profile = require('../../models/profileModel')
-const catchErrorsAsync = require('../../utils/catchAsync')
-const AppError = require('../../utils/appError')
+const User = require("../../models/userModel");
+const Profile = require("../../models/profileModel");
+const catchErrorsAsync = require("../../utils/catchAsync");
+const AppError = require("../../utils/appError");
 
-exports.createUpdateProfile = catchErrorsAsync(async(req, res, next) => {
-    const profileFields = {
-        user: req.user.id,
-    }
-    
-    let profile = await Profile.findOne({user: req.user.id})
-    if(profile) {
-        profile = await Profile.findOneAndUpdate(
-            {user: req.user.id},
-            {$set: profileFields},
-            {new: true})
-    }
-    profile = new Profile(profileFields)
-    await profile.save()
-    res.json(profile)
-})
+exports.createUpdateProfile = catchErrorsAsync(async (req, res, next) => {
+  const profileFields = {
+    user: req.user.id,
+  };
 
-exports.getMyProfile = catchErrorsAsync(async(req, res, next) => {
-    //Runs as soon as a user logs in
-    const profile = await Profile.findOne({
-        user: req.user.id
-    })
+  let profile = await Profile.findOne({ user: req.user.id });
+  if (profile) {
+    profile = await Profile.findOneAndUpdate(
+      { user: req.user.id },
+      { $set: profileFields },
+      { new: true }
+    );
+  }
+  profile = new Profile(profileFields);
+  await profile.save();
+  res.json(profile);
+});
 
-    if(!profile) next(new AppError('This user does not exist. Please sign up for an account. If you forgot the email or password please follow this link and follow the prompts to recover your account..'))
+exports.getMyProfile = catchErrorsAsync(async (req, res, next) => {
+  //Runs as soon as a user logs in
+  const profile = await Profile.findOne({
+    user: req.user.id,
+  });
 
-    res.status(200).json({
-        status: 'success',
-        data: profile
-    })
-})
+  if (!profile)
+    next(
+      new AppError(
+        "This user does not exist. Please sign up for an account. If you forgot the email or password please follow this link and follow the prompts to recover your account.."
+      )
+    );
 
-exports.getSearchedProfile = catchErrorsAsync(async(req, res, next) => {
-    //Current user logged in and using application
-    const currentUser = req.user
+  res.status(200).json({
+    status: "success",
+    data: profile,
+  });
+});
 
-    //User being searched for
-    const {userName} = req.body
+exports.getSearchedProfile = catchErrorsAsync(async (req, res, next) => {
+  //Current user logged in and using application
+  const currentUser = req.user;
 
-    //Prevent users from searching themselves up
-    if(userName === currentUser.userName) return next(new AppError(`${currentUser.firstName}, you cannot search yourself up..`))
+  //User being searched for
+  const { userName } = req.body;
 
-    //Check if the user being searched for exists
-    const user = await User.findOne({userName: userName})
-    if(!user) return next(new AppError('Could not find this user. Double check that the capitalization, spelling, any spaces, and numbers are correct.'))
-    
-    //If user exists then send their profile as a response
-    const userFullName = [user.firstName, user.lastName]
-    const profile = await Profile.findOne({
-        user: user._id
-    })
+  //Prevent users from searching themselves up
+  if (userName === currentUser.userName)
+    return next(new AppError(`${currentUser.firstName}, hi... :)`));
 
-    res.status(200).json({
-        status: 'success',
-        data: {
-            profile,
-            userFullName,
-            userName
-        }
-    })
-})
+  //Check if the user being searched for exists
+  const user = await User.findOne({ userName: userName });
+  if (!user)
+    return next(
+      new AppError(
+        "Could not find this user. Double check that the capitalization, spelling, any spaces, and numbers are correct."
+      )
+    );
 
-exports.deleteFriend = catchErrorsAsync(async(req, res, next) => {
-    const {friendUserId} = req.body
+  //If user exists then send their profile as a response
+  const userFullName = [user.firstName, user.lastName];
+  const profile = await Profile.findOne({
+    user: user._id,
+  });
+  const photo = user.photo;
 
-    //Delete user from current users friends array 
-    currentUserProfile = await Profile.findOneAndUpdate(
-        {user: req.user.id},
-        {$pull: {"friends": {userId: friendUserId}}},
-        {new: true}
-    )
-    
-    //Delete current user from deleted friend's friends array
-    await Profile.findOneAndUpdate(
-        {user: friendUserId},
-        {$pull: {"friends": {userId: req.user.id}}},
-        {new: true}
-    )
-    res.status(200).json({
-        status: "success",
-        data: currentUserProfile
-    })
-})
+  res.status(200).json({
+    status: "success",
+    data: {
+      profile,
+      userFullName,
+      userName,
+      photo,
+    },
+  });
+});
+
+exports.deleteFriend = catchErrorsAsync(async (req, res, next) => {
+  const { friendUserId } = req.body;
+
+  //Delete user from current users friends array
+  currentUserProfile = await Profile.findOneAndUpdate(
+    { user: req.user.id },
+    { $pull: { friends: { userId: friendUserId } } },
+    { new: true }
+  );
+
+  //Delete current user from deleted friend's friends array
+  await Profile.findOneAndUpdate(
+    { user: friendUserId },
+    { $pull: { friends: { userId: req.user.id } } },
+    { new: true }
+  );
+  res.status(200).json({
+    status: "success",
+    data: currentUserProfile,
+  });
+});

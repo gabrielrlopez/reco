@@ -1,260 +1,279 @@
-import React, { useState, useEffect } from 'react'
-import {addBookToMyBase} from '../../../actions/myBase'
-import {sendNewReco} from '../../../actions/reco'
-import axios from 'axios'
-import {connect} from 'react-redux'
-import  PropTypes from 'prop-types'
-import Spinner from '../Spinner'
+import React, { useState, useEffect } from "react";
+import { addBookToMyBase } from "../../../actions/myBase";
+import { sendNewReco } from "../../../actions/reco";
+import axios from "axios";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import Spinner from "../Spinner";
 
 //Bootstrap
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import Col from 'react-bootstrap/esm/Col'
-import Card from 'react-bootstrap/Card'
-import CardColumns from 'react-bootstrap/CardColumns'
-import Container from 'react-bootstrap/esm/Container'
-import Row from 'react-bootstrap/Row'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
-import ListGroup from 'react-bootstrap/ListGroup'
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/esm/Col";
+import Card from "react-bootstrap/Card";
+import CardColumns from "react-bootstrap/CardColumns";
+import Container from "react-bootstrap/esm/Container";
+import Row from "react-bootstrap/Row";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
+import ListGroup from "react-bootstrap/ListGroup";
 
+const Books = ({ addBookToMyBase, sendNewReco, profile: { profile } }) => {
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [bookReco, setBookReco] = useState({});
 
-const Books = ({addBookToMyBase, sendNewReco, profile: {profile}}) => {
-    
-    const [searchInput, setSearchInput] = useState('')
-    const [searchResults, setSearchResults] = useState([])
-    const [isDisabled, setIsDisabled] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [bookReco, setBookReco] = useState({})
-    
-    const onChange = (e) => setSearchInput(e.target.value)
+  const onChange = (e) => setSearchInput(e.target.value);
 
-    const searchGoogleBooks = async (input) => {
-       
-       setLoading(true)
-       
-       if(!input) return (setLoading(false))
-       
-       const data = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=40&key=${process.env.REACT_APP_BOOK_API_KEY}`)
+  const searchGoogleBooks = async (input) => {
+    setLoading(true);
 
-       const books = data.data['items'].map(book => {
-            const {volumeInfo} = book
-            book = {
-                googleId: book.id,
-                title: volumeInfo.title,
-                authors: volumeInfo.authors,
-                publisher: volumeInfo.publisher,
-                publishedDate: volumeInfo.publishedDate,
-                description: volumeInfo.description,
-                pageCount: volumeInfo.pageCount,
-                genre: volumeInfo.categories,
-                averageRating: volumeInfo.averageRating,
-                maturityRating: volumeInfo.maturityRating,
-                cover: volumeInfo.imageLinks,
-                previewLink: volumeInfo.previewLink
-            }
-            return book
-       })
+    if (!input) return setLoading(false);
 
-       let bookResults = books.filter(book => book.cover !== undefined )
+    const data = await axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=${input}&maxResults=40&key=${process.env.REACT_APP_BOOK_API_KEY}`
+    );
 
-       bookResults.map(book => book.cover = book.cover.thumbnail)
-       
-       setSearchResults(bookResults)
+    const books = data.data["items"].map((book) => {
+      const { volumeInfo } = book;
+      book = {
+        googleId: book.id,
+        title: volumeInfo.title,
+        authors: volumeInfo.authors,
+        publisher: volumeInfo.publisher,
+        publishedDate: volumeInfo.publishedDate,
+        description: volumeInfo.description,
+        pageCount: volumeInfo.pageCount,
+        genre: volumeInfo.categories,
+        averageRating: volumeInfo.averageRating,
+        maturityRating: volumeInfo.maturityRating,
+        cover: volumeInfo.imageLinks,
+        previewLink: volumeInfo.previewLink,
+      };
+      return book;
+    });
 
-       setLoading(false)
+    let bookResults = books.filter((book) => book.cover !== undefined);
+
+    bookResults.map((book) => (book.cover = book.cover.thumbnail));
+
+    setSearchResults(bookResults);
+
+    setLoading(false);
+  };
+
+  //disable favorite/readLater buttons for .5 seconds(if not user can click fast enough to store a duplicate book in their base.)
+  const disableButtons = () => {
+    setIsDisabled(true);
+    setTimeout(() => {
+      setIsDisabled(false);
+    }, 500);
+  };
+
+  //if book has more than one author render every author on a new line
+  const formatAuthors = (arr) => {
+    if (arr === undefined) return;
+    return arr.length > 1 ? (
+      arr.map((author, i) => <Card.Title key={i}>{author}</Card.Title>)
+    ) : (
+      <Card.Title>{arr}</Card.Title>
+    );
+  };
+
+  //Perform get request to Google Books api
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!searchInput) return;
+    searchGoogleBooks(searchInput);
+  };
+
+  //Add books to users profile
+  const favorite = (e) => {
+    e.preventDefault();
+    disableButtons();
+    try {
+      const book = searchResults.find((book) => book.title === e.target.value);
+      book.addedTo = "favorites";
+      addBookToMyBase(book);
+    } catch (error) {
+      console.error(error.message);
     }
+  };
 
-    //disable favorite/readLater buttons for .5 seconds(if not user can click fast enough to store a duplicate book in their base.)
-    const disableButtons = () => {
-        setIsDisabled(true)
-        setTimeout(() =>{
-            setIsDisabled(false)
-        }, 500)
+  const readLater = (e) => {
+    e.preventDefault();
+    disableButtons();
+    try {
+      const book = searchResults.find((book) => book.title === e.target.value);
+      book.addedTo = "readLater";
+      addBookToMyBase(book);
+    } catch (error) {
+      console.error(error.message);
     }
-    
-    //if book has more than one author render every author on a new line
-    const formatAuthors = (arr) => {
-        if(arr === undefined) return
-        return arr.length > 1 ? arr.map((author, i) =>(<Card.Title key={i}>{author}</Card.Title>)) : (<Card.Title>{arr}</Card.Title>)
+  };
+
+  //Reco functionality
+
+  //Store the book to bookReco state when user clicks on the "Reco a friend" button
+  const storeBookToState = (e) => {
+    e.preventDefault();
+    const book = searchResults.find((book) => book.title === e.target.value);
+    setBookReco(book);
+  };
+
+  //Send the recommendation
+  const sendNewRecommendation = (e) => {
+    setLoading(true);
+    e.preventDefault();
+    try {
+      const friendId = e.target.value;
+      sendNewReco(friendId, bookReco);
+      setLoading(false);
+    } catch (error) {
+      console.error(error.message);
     }
+  };
 
-    //Perform get request to Google Books api 
-    const onSubmit = (e) => {
-        e.preventDefault()
-        if(!searchInput) return
-        searchGoogleBooks(searchInput)
-    }
-    
-    //Add books to users profile
-    const favorite = (e) => {
-        e.preventDefault()
-        disableButtons()
-        try {
-            const book = searchResults.find(book => book.title === e.target.value)
-            book.addedTo = 'favorites'
-            addBookToMyBase(book)
-        } catch (error) {
-            console.error(error.message)
-        }
-    }
+  //Popover
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Title as="h3">Select A Friend To Reco This Book</Popover.Title>
 
-    const readLater = (e) => {
-        e.preventDefault()
-        disableButtons()
-        try {
-            const book = searchResults.find(book => book.title === e.target.value)
-            book.addedTo = 'readLater'
-            addBookToMyBase(book)
-        } catch (error) {
-            console.error(error.message)
-        }
-    }
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Popover.Content>
+          <ListGroup variant="flush">
+            {!profile ? (
+              <Spinner />
+            ) : (
+              profile.data.friends.map((friend, i) => (
+                <ListGroup.Item
+                  action
+                  key={i}
+                  value={friend.userId}
+                  onClick={sendNewRecommendation}
+                >
+                  {`${friend.userFullName[0]} ${friend.userFullName[1]} `}
+                </ListGroup.Item>
+              ))
+            )}
+          </ListGroup>
+        </Popover.Content>
+      )}
+    </Popover>
+  );
 
-    //Reco functionality
+  return (
+    <Container style={{ textAlign: "center" }}>
+      <h1>
+        Recommend a book to a friend, or add it to your library of favorites.
+      </h1>
+      <h2>Haven't read it? Add it to your "Read Later" library!</h2>
 
-    //Store the book to bookReco state when user clicks on the "Reco a friend" button
-    const storeBookToState = (e) => {
-        e.preventDefault()
-        const book = searchResults.find(book => book.title === e.target.value)
-        setBookReco(book)
-    }
+      <br></br>
 
-    //Send the recommendation 
-    const sendNewRecommendation = (e) => {
-        setLoading(true)
-        e.preventDefault()
-        try {
-            const friendId = e.target.value
-            sendNewReco(friendId, bookReco)    
-            setLoading(false)        
-        } catch (error) {
-            console.error(error.message)
-        }
-    }
+      <Form onSubmit={onSubmit}>
+        <Form.Row className="align-items-center">
+          <Col>
+            <Form.Control
+              size="lg"
+              type="text"
+              placeholder="Search books by author or title"
+              id="searchInput"
+              value={searchInput}
+              onChange={(e) => onChange(e)}
+            />
+          </Col>
 
-    //Popover
-    const popover = (
-        <Popover id="popover-basic">
+          <Button type="submit" className="mb-2" variant="outline-success">
+            Search
+          </Button>
+        </Form.Row>
+      </Form>
 
-          <Popover.Title as="h3">Select A Friend To Reco This Book</Popover.Title>
+      <br></br>
 
-          {loading ? <Spinner /> : 
-            <Popover.Content> 
-              <ListGroup variant="flush">
-                  {!profile ? <Spinner /> : profile.data.friends.map((friend, i) => 
-                      <ListGroup.Item
-                       action 
-                       key={i}
-                       value={friend.userId}
-                       onClick={sendNewRecommendation}
-                      >
-                      {`${friend.userFullName[0]} ${friend.userFullName[1]} `}
-                      </ListGroup.Item> 
-                  )}
-              </ListGroup>
-            </Popover.Content>
-          }
+      {loading ? (
+        <Spinner />
+      ) : (
+        <CardColumns>
+          {searchResults.map((book) => (
+            <Card
+              border="secondary"
+              style={{ width: "18rem" }}
+              className="text-center"
+              key={book.googleId}
+            >
+              <Card.Body>
+                <Card.Header>{book.title}</Card.Header>
 
-        </Popover>
-    )
+                {formatAuthors(book.authors)}
 
+                <Card.Body>
+                  <img src={book.cover} />
 
-
-    return (
-        <Container style={{textAlign: "center"}}>
-            <h1>Recommend a book to a friend, or add it to your library of favorites.</h1>
-            <h2>Haven't read it? Add it to your "Read Later" library!</h2>
-
-            <br></br>
-
-            <Form onSubmit={onSubmit}>
-                <Form.Row className="align-items-center">
-                    <Col>
-                    <Form.Control size="lg" type="text" placeholder="Search books by author or title" id="searchInput" value={searchInput} onChange={e => onChange(e)} />
-                    </Col>
-                   
-                    <Button type="submit" className="mb-2" variant="outline-success">
-                      Search
-                    </Button>
-                 
-                </Form.Row>
-            </Form>
-
-            <br></br>
-
-            {loading ? <Spinner /> : <CardColumns>
-                {searchResults.map(book => 
-                    <Card
-                        border="secondary"
-                        style={{width: '18rem'}}
-                        className='text-center'
-                        key={book.googleId}
+                  <Row
+                    className="justify-content-md-center"
+                    style={{ padding: "5px" }}
+                  >
+                    <Button
+                      disabled={isDisabled}
+                      onClick={favorite}
+                      style={{ marginRight: "5px" }}
+                      value={book.title}
+                      variant="primary"
                     >
-                        <Card.Body>
+                      Favorite
+                    </Button>
+                    <Button
+                      disabled={isDisabled}
+                      onClick={readLater}
+                      value={book.title}
+                      variant="primary"
+                    >
+                      Read later
+                    </Button>
+                  </Row>
 
-                            <Card.Header>
-                                {book.title}
-                            </Card.Header>
+                  <OverlayTrigger
+                    rootClose
+                    trigger="click"
+                    placement="right"
+                    overlay={popover}
+                  >
+                    <Button
+                      variant="danger"
+                      value={book.title}
+                      onClick={storeBookToState}
+                    >
+                      Reco a friend
+                    </Button>
+                  </OverlayTrigger>
+                </Card.Body>
+              </Card.Body>
+            </Card>
+          ))}
+        </CardColumns>
+      )}
+    </Container>
+  );
+};
 
-                            {formatAuthors(book.authors)}
-
-                            <Card.Body>
-                                <img src={book.cover}/>
-
-                                <Row 
-                                    className="justify-content-md-center"
-                                    style={{padding: '5px'}}
-                                >
-                                    <Button 
-                                        disabled={isDisabled}
-                                        onClick={favorite}
-                                        style={{marginRight: '5px'}}
-                                        value={book.title}
-                                        variant="primary"
-                                    >
-                                        Favorite
-                                    </Button>
-                                    <Button
-                                        disabled={isDisabled}
-                                        onClick={readLater}
-                                        value={book.title}
-                                        variant="primary"
-                                    >
-                                        Read later
-                                    </Button>
-                                </Row>
-
-                                <OverlayTrigger rootClose trigger="click" placement="right" overlay={popover}>
-                                    <Button 
-                                        variant="danger"
-                                        value={book.title}
-                                        onClick={storeBookToState}
-                                    >
-                                    Reco a friend
-                                    </Button>
-                                </OverlayTrigger>
-
-                            </Card.Body>
-
-                        </Card.Body>    
-                    </Card>
-                )}
-            </CardColumns>}
-        </Container>
-    )
-}
-
-Books.propType ={
-    addBookToMyBase: PropTypes.func.isRequired,
-    sendNewReco: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired,
-    profile:  PropTypes.object.isRequired
-}
+Books.propType = {
+  addBookToMyBase: PropTypes.func.isRequired,
+  sendNewReco: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  profile: PropTypes.object.isRequired,
+};
 
 const mapStateToProps = (state) => ({
-    auth: state.auth,
-    profile: state.profile
-})
+  auth: state.auth,
+  profile: state.profile,
+});
 
-export default connect(mapStateToProps, {addBookToMyBase, sendNewReco})(Books)
+export default connect(mapStateToProps, { addBookToMyBase, sendNewReco })(
+  Books
+);
