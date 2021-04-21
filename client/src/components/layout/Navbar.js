@@ -194,7 +194,7 @@ const Navigation = ({
         <Nav className="mr-auto">
           {!loading && isAuthenticated ? authLinks : null}
         </Nav>
-        {!loading && isAuthenticated ? searchBar : guestLinks}
+        {isAuthenticated ? searchBar : guestLinks}
       </Navbar>
       {searchedProfile ? <Redirect to="/searchFriends" /> : null}
     </>

@@ -27,12 +27,27 @@ const UpdateProfile = ({ auth: { user }, updateUserInfo }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+
     const formData = new FormData();
-    formData.append("email", email);
-    formData.append("firstName", firstName);
-    formData.append("lastname", lastName);
-    formData.append("photo", profilePhoto);
-    updateUserInfo(formData);
+
+    if (email !== "") formData.append("email", email);
+    if (firstName !== "") formData.append("firstName", firstName);
+    if (lastName !== "") formData.append("lastName", lastName);
+    if (profilePhoto.photo !== "") formData.append("photo", profilePhoto);
+
+    if (
+      formData.has("firstName") === true ||
+      formData.has("lastName") === true ||
+      formData.has("email") === true ||
+      formData.has("photo") === true
+    )
+      updateUserInfo(formData);
+
+    setFormData({
+      email: "",
+      firstName: "",
+      lastName: "",
+    });
   };
 
   return (

@@ -53,7 +53,6 @@ export const signUp = (
   } catch (error) {
     const errors = error.response.data;
     if (errors) {
-      console.log(errors);
       dispatch(setAlert(errors.message, "danger", 3000));
     }
     dispatch({
@@ -76,7 +75,6 @@ export const login = (email, password) => async (dispatch) => {
   } catch (error) {
     const errors = error.response.data;
     if (errors) {
-      console.log(errors);
       dispatch(setAlert(errors.message, "danger", 3000));
     }
     dispatch({
@@ -101,10 +99,17 @@ export const updateUserInfo = (formData) => async (dispatch) => {
       type: USER_LOADED,
       payload: res.data,
     });
+
+    dispatch(
+      setAlert(
+        "Your account information has been successfully updated!",
+        "success",
+        1500
+      )
+    );
   } catch (error) {
     const errors = error.response.data;
     if (errors) {
-      console.log(errors);
       dispatch(setAlert(errors.message, "danger", 3000));
     }
   }
@@ -124,18 +129,35 @@ export const updatePassword = (
 
     const res = await api.post("/users/updateMyPassword", data);
 
-    dispatch(
-      setAlert("Your password has been successfully updated!", "success", 1500)
-    );
-
     dispatch({
       type: USER_LOADED,
       payload: res.data,
     });
+
+    dispatch(
+      setAlert("Your password has been successfully updated!", "success", 1500)
+    );
   } catch (error) {
     const errors = error.response.data;
     if (errors) {
-      console.log(errors);
+      dispatch(setAlert(errors.message, "danger", 3000));
+    }
+  }
+};
+
+export const resetPassword = (email) => async (dispatch) => {
+  try {
+    await api.post("/users/forgotPassword", { email });
+    dispatch(
+      setAlert(
+        `A link to reset your password has been sent to ${email}`,
+        "success",
+        3000
+      )
+    );
+  } catch (error) {
+    const errors = error.response.data;
+    if (errors) {
       dispatch(setAlert(errors.message, "danger", 3000));
     }
   }

@@ -44,6 +44,9 @@ exports.signUp = catchErrorsAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
+  // const url = `${req.protocol}://${req.get("host")}/myAccount`;
+  // await new Email(newUser, url).sendWelcome();
+
   createSendToken(newUser, 201, res);
 });
 
@@ -150,7 +153,7 @@ exports.forgotPassword = catchErrorsAsync(async (req, res, next) => {
     "host"
   )}/api/users/resetPassword/${resetToken}`;
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\n If you didn't forget your password, please ignore this email.`;
+  const message = `Forgot your password? Click this link ${resetURL} to reset your password. This link is valid only for 10 minutes.\n If you didn't forget your password, please ignore this email.`;
 
   try {
     await sendEmail({
@@ -167,7 +170,6 @@ exports.forgotPassword = catchErrorsAsync(async (req, res, next) => {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
-
     return next(
       new AppError(
         "There was an error sending the email. Try again later!",
@@ -204,7 +206,6 @@ exports.resetPassword = catchErrorsAsync(async (req, res, next) => {
 });
 
 exports.updatePassword = catchErrorsAsync(async (req, res, next) => {
-  console.log(req.body);
   //1) Get user from collection
   const user = await User.findById(req.user.id).select("+password");
   //2) Check if the posted password is correct

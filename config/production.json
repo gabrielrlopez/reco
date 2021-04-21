@@ -1,0 +1,14 @@
+{
+    "mongoURI": "mongodb+srv://gabrielrlopez:recommendation123@cluster0.mcxuv.mongodb.net/reco?retryWrites=true&w=majority",
+    "jwtSECRET": "RecommendationsDriveNewExperiences",
+    "jwtEXPIRESIN": "90d",
+    "jwtCOOKIEEXPIRE": "90d",
+    "EMAIL_HOST": "smtp.mailtrap.io",
+    "EMAIL_PORT": 2525,
+    "EMAIL_USERNAME": "48a49e9a422601",
+    "EMAIL_PASSWORD": "36e60b33a27990",
+    "GOOGLE_BOOKS_API_KEY": "AIzaSyA0_P15mysofUZ-CvGLnz8_4BTov5ex7s0",
+    "EMAIL_FROM": "gabrielrosaleslopez123@gmail.com",
+    "SENDGRID_USERNAME": "apikey",
+    "SENDGRID_PASSWORD": "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"
+}

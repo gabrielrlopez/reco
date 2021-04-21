@@ -9,11 +9,13 @@ import {
 import { searchFriends } from "../../actions/friends";
 import Spinner from "./Spinner";
 import PropTypes from "prop-types";
+import { getCurrentProfile } from "../../actions/profile";
+import { Redirect } from "react-router";
+import UserProfile from "./UserProfile";
+
 import Container from "react-bootstrap/esm/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Button from "react-bootstrap/Button";
-import { getCurrentProfile } from "../../actions/profile";
-import { Redirect } from "react-router";
 
 const Users = ({
   profile: { profile, loading, searchedProfile, searchedFriends },
@@ -45,6 +47,10 @@ const Users = ({
   const searchedUserFullName = searchedProfile.data.userFullName;
   const searchedUserId = searchedProfile.data.profile.user;
   const searchedUserPhoto = searchedProfile.data.photo;
+  const searchedUserFavoriteBooks =
+    searchedProfile.data.profile.userBase.books.favorites;
+  const searchedUserReadLaterBooks =
+    searchedProfile.data.profile.userBase.books.readLater;
   const searchedUserFriends = searchedProfile.data.profile.friends;
   const searchedUserFriendRequests =
     searchedProfile.data.profile.friendRequests;
@@ -104,28 +110,13 @@ const Users = ({
   return (
     <>
       {currentUserFriendsUserNames.includes(searchedUserName) ? (
-        <Container>
-          <Jumbotron>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <img
-                className="user-profile-photo"
-                src={`/users/${searchedUserPhoto}`}
-                style={{
-                  marginRight: "30px",
-                }}
-              />
-              <h1>{searchedUserName}</h1>
-            </div>
-            <h5>{`${searchedUserFullName[0]}`}'s favorites by category</h5>
-            <h5>{`${searchedUserFullName[0]}`}'s friends</h5>
-          </Jumbotron>
-        </Container>
+        <UserProfile
+          searchedUserFullName={searchedUserFullName}
+          searchedUserName={searchedUserName}
+          searchedUserPhoto={searchedUserPhoto}
+          favoriteBookArr={searchedUserFavoriteBooks}
+          readLaterBookArr={searchedUserReadLaterBooks}
+        />
       ) : (
         <Container style={{ marginTop: "20px" }}>
           <Jumbotron

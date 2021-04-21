@@ -63,8 +63,6 @@ exports.getAllUsers = async (req, res, next) => {
 };
 
 exports.updateMe = catchErrorsAsync(async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
   //1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
@@ -80,8 +78,8 @@ exports.updateMe = catchErrorsAsync(async (req, res, next) => {
   if (req.file) filteredBody.photo = req.file.filename;
 
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
     runValidators: true,
+    new: true,
   });
 
   //3) Update user
